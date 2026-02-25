@@ -8,13 +8,13 @@ interface UseOrderProps {
 }
 
 export const useOrders = (props?: UseOrderProps) => {
-  const first = props?.first;
+  const first = props?.first ?? 10;
   const after = props?.after;
 
   const [hasNextPage, setHasNextPage] = useState<boolean>(false);
   const [endCursor, setEndCursor] = useState<string | undefined>(undefined);
 
-  const { data, error, loading, refetch } = useQuery(GET_ORDERS_QUERY, {
+  const { data, error, loading, fetchMore } = useQuery(GET_ORDERS_QUERY, {
     variables: {
       first,
       after,
@@ -26,9 +26,11 @@ export const useOrders = (props?: UseOrderProps) => {
     setEndCursor(data?.orders?.pageInfo?.endCursor ?? undefined);
   }, [data?.orders?.pageInfo]);
 
-  const handleRefetchNextPage = () => {
-    refetch({
-      after: endCursor,
+  const handleFetchMore = () => {
+    fetchMore({
+      variables: {
+        after: endCursor,
+      },
     });
   };
 
@@ -37,6 +39,6 @@ export const useOrders = (props?: UseOrderProps) => {
     error,
     loading,
     data,
-    handleRefetchNextPage,
+    handleFetchMore
   };
 };
