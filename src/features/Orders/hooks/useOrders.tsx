@@ -26,7 +26,7 @@ export const useOrders = (props?: UseOrderProps) => {
     setEndCursor(data?.orders?.pageInfo?.endCursor ?? undefined);
   }, [data?.orders?.pageInfo]);
 
-  const handleFetchMore = () => {
+  const onFetchMore = () => {
     fetchMore({
       variables: {
         after: endCursor,
@@ -39,6 +39,6 @@ export const useOrders = (props?: UseOrderProps) => {
     error,
     loading,
     data,
-    handleFetchMore
+    onFetchMore
   };
 };

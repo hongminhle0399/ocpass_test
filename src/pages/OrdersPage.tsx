@@ -1,5 +1,5 @@
-import { OrderTable } from "@/features/Orders/components";
+import { OrdersFeature } from "@/features/Orders/components";
 
 export const OrdersPage = () => {
-  return <OrderTable />
+  return <OrdersFeature />
 };
