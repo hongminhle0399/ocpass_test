@@ -1,1 +1,1 @@
-export { useAppSettingsStore, toggleDarkMode } from "./appSettings.store";
+export { useAppSettingsStore, PERSIST_KEY } from "./appSettingsStore";
