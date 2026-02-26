@@ -10,21 +10,20 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useOrdersContext } from "../hooks";
-import type { ColumnItem, ColumnKey, Order } from "../types";
+import type { OrderColumnItem, OrderColumnKey, OrderModel } from "../types";
 
-
-const columns: ColumnItem<ColumnKey<Order>> = {
+const columns: OrderColumnItem = {
   id: "ID",
   orderDate: "Order Date",
   shippedDate: "Ship Name",
-  customer: "Customer",
+  customerContactName: "Contact Name",
   shipName: "Ship Name",
   shipAddress: "Ship Address",
   customerId: "Customer ID",
-  employee: "Employee",
+  employeeName: "Employee Name",
   shipCountry: "Ship Country",
 };
 
@@ -43,47 +42,60 @@ export const OrdersTable = () => {
     navigate(to);
   };
 
-  const renderCell = useCallback((columnKey: ColumnKey<Order>, item: Order) => {
-    switch (columnKey) {
-      case "id":
-        return (
-          <div className="font-semibold text-blue-500">
-            <p>{item[columnKey]}</p>
-          </div>
-        );
-      // case "shipAddress":
-      // case "shipCountry":
-      // case "orderDate":
-      // case "shipName":
-      // case "shippedDate":
-      //   return <p>item[columnKey]</p>
-      case "customer":
-        const customer = item[columnKey];
-        return (
-          <div className="flex gap-x-2">
-            <Avatar name={customer?.contactName || ""} />
-            <div className="flex flex-col">
-              <p className="text-md whitespace-nowrap overflow-hidden text-ellipsis">
-                <span className="font-bold">{customer?.contactName}</span>
-              </p>
-              <p className="whitespace-nowrap overflow-hidden text-ellipsis text-gray-500">
-                {customer?.phone}
-              </p>
+  const renderCell = useCallback(
+    (columnKey: OrderColumnKey, item: OrderModel) => {
+      switch (columnKey) {
+        case "id":
+          const id = item[columnKey];
+          return (
+            <div className="font-semibold text-blue-500">
+              <p>{id}</p>
             </div>
-          </div>
-        );
-      case "employee":
-        const employee = item[columnKey];
-        return (
-          <div className="flex gap-x-1">
-            <p className="font-bold">{employee?.firstName}</p>
-            <p className="text-gray-400">{employee?.lastName}</p>
-          </div>
-        );
-      default:
-        return item[columnKey];
-    }
-  }, []);
+          );
+        case "customerPhone":
+          return null;
+        case "customerContactName":
+          return (
+            <div className="flex gap-x-2">
+              <Avatar name={item["customerContactName"] || ""} />
+              <div className="flex flex-col">
+                <p className="text-md whitespace-nowrap overflow-hidden text-ellipsis">
+                  <span className="font-bold">
+                    {item["customerContactName"]}
+                  </span>
+                </p>
+                <p className="whitespace-nowrap overflow-hidden text-ellipsis text-gray-500">
+                  {item["customerPhone"]}
+                </p>
+              </div>
+            </div>
+          );
+        case "employeeName":
+          const employeeName = item[columnKey]?.split("\s+");
+          return (
+            <div className="flex gap-x-1">
+              <p className="font-bold">{employeeName?.[0]}</p>
+              <p className="text-gray-400">{employeeName?.[1]}</p>
+            </div>
+          );
+        default:
+          return item[columnKey];
+      }
+    },
+    [],
+  );
+
+  const tableHeader = useMemo(() => {
+    return (
+      <TableHeader>
+        {typedKeys(columns)
+          .filter((item) => item !== "customerPhone")
+          .map((key) => {
+            return <TableColumn key={key}>{columns[key]}</TableColumn>;
+          })}
+      </TableHeader>
+    );
+  }, [columns]);
 
   return (
     <Table
@@ -108,23 +120,19 @@ export const OrdersTable = () => {
         td: "whitespace-nowrap overflow-hidden text-ellipsis max-w-60",
       }}
     >
-      <TableHeader>
-        {typedKeys(columns).map((key) => {
-          return <TableColumn key={key}>{columns[key]}</TableColumn>;
-        })}
-      </TableHeader>
+      {tableHeader}
       <TableBody
         isLoading={initialLoading}
-        items={orders}
+        items={orders || []}
         loadingContent={<Spinner label="Loading..." />}
       >
         {(item) => {
           return (
-            <TableRow key={item.id} onClick={handleRowClick(item.id)}>
+            <TableRow key={item.id} onClick={handleRowClick(item.id!)}>
               {(columnKey) => {
                 return (
                   <TableCell>
-                    {renderCell(columnKey as ColumnKey<Order>, item)}
+                    {renderCell(columnKey as OrderColumnKey, item)}
                   </TableCell>
                 );
               }}

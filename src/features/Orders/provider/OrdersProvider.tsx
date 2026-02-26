@@ -5,31 +5,30 @@ import {
   type PropsWithChildren,
 } from "react";
 import { useOrders } from "../hooks";
-import type { Order } from "../types";
+import type { OrderModel } from "../types";
+import { toOrderModel } from "../utils";
 
 interface OrderProviderContextType {
-  filteredOrders: Order[];
-  ordersFilters: Order;
-  orders: Order[];
+  filteredOrders: OrderModel[] | undefined;
+  ordersFilters: OrderModel;
+  orders: OrderModel[] | undefined;
   takeNumber: number;
   loading: boolean;
   hasNextPage: boolean;
-  setOrdersFilers: (order: Order) => void;
-  setTakeNumber: (takeNumber: number) => void
-  onFetchMore: () => void
+  setOrdersFilters: (order: OrderModel) => void;
+  setTakeNumber: (takeNumber: number) => void;
+  onFetchMore: () => void;
 }
 
-const ORDERS_FILTER_DEFAULT_STATE: Order = {
-  id: "",
-  __typename: "Order",
-  customer: null,
-  customerId: null,
-  employee: null,
-  orderDate: "",
+const ORDERS_FILTER_DEFAULT_STATE: OrderModel = {
+  customerContactName: "",
+  customerId: "",
+  employeeName: "",
+  orderDate: undefined,
+  shippedDate: undefined,
   shipAddress: "",
   shipCountry: "",
   shipName: "",
-  shippedDate: "",
 };
 
 const DEFAULT_TAKE_NUMBER = 10;
@@ -39,7 +38,7 @@ export const OrdersContext = createContext<OrderProviderContextType>(
 );
 
 export const OrdersProvider = ({ children }: PropsWithChildren) => {
-  const [ordersFilters, setOrdersFilers] = useState<Order>(
+  const [ordersFilters, setOrdersFilters] = useState<OrderModel>(
     ORDERS_FILTER_DEFAULT_STATE,
   );
   const [takeNumber, setTakeNumber] = useState<number>(DEFAULT_TAKE_NUMBER);
@@ -47,10 +46,11 @@ export const OrdersProvider = ({ children }: PropsWithChildren) => {
     first: takeNumber,
   });
 
-  const orders: Order[] = useMemo(
-    () => data?.orders?.nodes?.filter((o): o is Order => o != null) ?? [],
-    [data],
-  );
+  const orders: OrderModel[] | undefined = useMemo(() => {
+    const orderModels: OrderModel[] | undefined =
+      data?.orders?.nodes?.map((item) => toOrderModel(item));
+    return orderModels;
+  }, [data]);
 
   const filteredOrders = useMemo(() => {
     return orders;
@@ -65,9 +65,9 @@ export const OrdersProvider = ({ children }: PropsWithChildren) => {
         loading,
         takeNumber,
         hasNextPage,
-        setOrdersFilers,
+        setOrdersFilters,
         setTakeNumber,
-        onFetchMore
+        onFetchMore,
       }}
     >
       {children}

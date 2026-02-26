@@ -39,6 +39,6 @@ export const useOrders = (props?: UseOrderProps) => {
     error,
     loading,
     data,
-    onFetchMore
+    onFetchMore,
   };
 };
