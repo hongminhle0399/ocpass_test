@@ -10,8 +10,9 @@ import {
 } from "@heroui/react";
 
 import { MoonIcon, SunIcon } from "@heroicons/react/20/solid";
-import { toggleDarkMode, useAppSettingsStore } from "@/store/appSettings.store";
+import { useAppSettingsStore } from "@/store/appSettingsStore";
 import { useMemo } from "react";
+import { BrandLogo } from "@/shared/ui";
 
 const NAVIGATION_ITEMS = [
   {
@@ -26,6 +27,7 @@ const NAVIGATION_ITEMS = [
 
 const TheHeader = () => {
   const isDarkMode = useAppSettingsStore((state) => state.isDarkMode);
+  const toggleDarkMode = useAppSettingsStore((state) => state.toggleDarkMode)
   const { pathname } = useLocation();
 
   const darkModeIcon = useMemo(() => {
@@ -59,12 +61,7 @@ const TheHeader = () => {
     >
       <NavbarContent className="flex">
         <NavbarBrand className="basis-auto grow-0 mr-4">
-          <Image
-            src="https://occupass.com/assets/occupass-mpO8hpII.svg"
-            alt="Occupass Logo"
-            className="size-auto"
-            fetchPriority="high"
-          />
+          <BrandLogo isDark={isDarkMode} />
         </NavbarBrand>
         <NavbarContent className="hidden sm:flex gap-5">
           {NAVIGATION_ITEMS.map((nav) => {
