@@ -10,7 +10,7 @@ import {
 } from "@heroui/react";
 
 import { MoonIcon, SunIcon } from "@heroicons/react/20/solid";
-import { useAppSettingsStore } from "@/store/appSettingsStore";
+import { useAppSettingsStore } from "@/shared/store/appSettingsStore";
 import { useMemo } from "react";
 import { BrandLogo } from "@/shared/ui";
 
