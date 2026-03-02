@@ -1,1 +1,1 @@
-export { ApolloClientProvider } from './ApolloProvider'
+export { ReactQueryProvider } from './ReactQueryProvider'
