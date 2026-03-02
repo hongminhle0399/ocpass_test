@@ -1,4 +1,5 @@
-export const CustomersPage = () => {
-  return "Hello Customers"
-};
+import { CustomersFeature } from "@/features/Customers/components";
 
+export const CustomersPage = () => {
+  return <CustomersFeature />;
+};
