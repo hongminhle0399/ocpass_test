@@ -1,14 +1,11 @@
-import { OrdersProvider } from "../provider";
-import { OrdersFilter } from "./OrdersFilters";
+import { OrdersFilter } from "./OrdersFilter";
 import { OrdersTable } from "./OrdersTable";
 
 export const OrdersFeature = () => {
   return (
-    <OrdersProvider>
-      <div className="flex flex-col gap-y-4">
-        <OrdersFilter />
-        <OrdersTable />
-      </div>
-    </OrdersProvider>
+    <div className="flex flex-col gap-y-4">
+      <OrdersFilter />
+      <OrdersTable />
+    </div>
   );
 };

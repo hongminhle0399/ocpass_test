@@ -1,22 +1,25 @@
 import type { GetOrdersQuery } from "@/graphql/__generated__/graphql";
-import type { DateValue, RangeValue } from "@heroui/react";
+import type { RangeValue } from "@heroui/react";
+import type { DateValue } from "@internationalized/date";
 
 export type OrderQueryNode = NonNullable<
   NonNullable<GetOrdersQuery["orders"]>["nodes"]
 >[number];
 
-export type OrderModel = Partial<{
+export type OrderModel = {
   id: string | null;
   shipName: string | null;
   shipAddress: string | null;
   shipCountry: string | null;
   customerId: string | null;
-  orderDate: any;
-  shippedDate: any;
+  orderDate: string | null;
+  shippedDate: string | null;
   customerContactName: string | null;
   customerPhone: string | null;
   employeeName: string | null;
-}>;
+};
+
+export type OrderKey = keyof OrderModel;
 
 interface PaginationData {
   endCursor: string | null;
@@ -29,12 +32,20 @@ export interface OrderData {
 }
 
 export type OrderColumnKey = keyof OrderModel;
-export interface OrderColumnItem extends OrderModel {}
+export type OrderColumnItem = { [K in OrderKey]: string };
 
-export type OrderKey = keyof OrderModel;
+// FOR FILTER
+export type DatePickerValue = RangeValue<DateValue>;
+
+export type InputFilterField = Pick<OrderModel, "shipAddress" | "customerId" | "customerPhone">;
+export type DateFilterField = {
+  orderDateRange: DatePickerValue | null
+  shippedDateRange: DatePickerValue | null
+}
+export type OrderFilterModel = InputFilterField & DateFilterField;
+export type OrderFilterModelKey = keyof OrderFilterModel;
 
 type BaseFilter = {
-  available: boolean;
   label: string;
 };
 
@@ -43,16 +54,16 @@ export type InputFilter<T = string> = {
   defaultValue: T;
 } & BaseFilter;
 
-export type DateFilter<T = RangeValue<DateValue>> = {
-  defaultValue: T
+export type DateFilter<T = DatePickerValue> = {
+  defaultValue: T;
 } & BaseFilter;
 
-export type OrderFilter = {
-  [K in OrderKey]:
-    | InputFilter<OrderModel[K]>
-    | DateFilter<OrderModel[K]>
-    | null;
+export type OrderFilterControl = {
+  [K in OrderFilterModelKey]: K extends keyof InputFilterField
+    ? InputFilter<OrderFilterModel[K]>
+    : DateFilter<OrderFilterModel[K]> | null;
 };
 
-export type FilterHandler = (...args: any[]) => void
-export type FilterHanlderProvider = Record<OrderKey, FilterHandler>
+export type OrderFilterControlKey = keyof OrderFilterControl;
+export type FilterHandler = (...args: any[]) => void;
+export type FilterHanlderProvider = Record<OrderFilterControlKey, FilterHandler>;

@@ -10,40 +10,31 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { useNavigate } from "react-router";
-import { useOrdersContext } from "../hooks";
-import type { OrderColumnItem, OrderColumnKey, OrderModel } from "../types";
-
-const columns: OrderColumnItem = {
-  id: "ID",
-  orderDate: "Order Date",
-  shippedDate: "Ship Name",
-  customerContactName: "Contact Name",
-  shipName: "Ship Name",
-  shipAddress: "Ship Address",
-  customerId: "Customer ID",
-  employeeName: "Employee Name",
-  shipCountry: "Ship Country",
-};
+import { COMPOSABLE_COLLUMS, ORDERS_COLUMNS } from "../constants";
+import { useOrders } from "../hooks";
+import type { OrderColumnKey, OrderModel } from "../types";
 
 export const OrdersTable = () => {
   const navigate = useNavigate();
-  const { orders, hasNextPage, loading, onFetchMore } = useOrdersContext();
-  const [initialLoading, setIsInialLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    if (orders) {
-      setIsInialLoading(false);
-    }
-  }, [orders]);
+  const { data, hasNextPage, loading, isFetchingNextPage, fetchNextPage } =
+    useOrders({});
 
   const handleRowClick = (to: string) => () => {
     navigate(to);
   };
 
+  const fetchMoreOrders = () => {
+    fetchNextPage();
+  };
+
   const renderCell = useCallback(
     (columnKey: OrderColumnKey, item: OrderModel) => {
+      if (COMPOSABLE_COLLUMS.includes(columnKey)) {
+        return null;
+      }
+
       switch (columnKey) {
         case "id":
           const id = item[columnKey];
@@ -52,8 +43,6 @@ export const OrdersTable = () => {
               <p>{id}</p>
             </div>
           );
-        case "customerPhone":
-          return null;
         case "customerContactName":
           return (
             <div className="flex gap-x-2">
@@ -88,14 +77,14 @@ export const OrdersTable = () => {
   const tableHeader = useMemo(() => {
     return (
       <TableHeader>
-        {typedKeys(columns)
-          .filter((item) => item !== "customerPhone")
+        {typedKeys(ORDERS_COLUMNS)
+          .filter((key) => !COMPOSABLE_COLLUMS.includes(key))
           .map((key) => {
-            return <TableColumn key={key}>{columns[key]}</TableColumn>;
+            return <TableColumn key={key}>{ORDERS_COLUMNS[key]}</TableColumn>;
           })}
       </TableHeader>
     );
-  }, [columns]);
+  }, []);
 
   return (
     <Table
@@ -105,10 +94,14 @@ export const OrdersTable = () => {
       selectionMode="single"
       aria-label="Table with orders data"
       bottomContent={
-        hasNextPage && !initialLoading ? (
+        hasNextPage && data ? (
           <div className="flex w-full justify-center py-4">
-            <Button isDisabled={loading} variant="flat" onPress={onFetchMore}>
-              {loading && <Spinner color="white" size="sm" />}
+            <Button
+              isDisabled={isFetchingNextPage}
+              variant="flat"
+              onPress={fetchMoreOrders}
+            >
+              {isFetchingNextPage && <Spinner color="white" size="sm" />}
               Load More
             </Button>
           </div>
@@ -122,8 +115,8 @@ export const OrdersTable = () => {
     >
       {tableHeader}
       <TableBody
-        isLoading={initialLoading}
-        items={orders || []}
+        isLoading={loading}
+        items={data || []}
         loadingContent={<Spinner label="Loading..." />}
       >
         {(item) => {
