@@ -1,6 +1,6 @@
 import Routing from "@/routing";
-import { ApolloClientProvider } from "./providers";
-import { useAppSettingsStore } from "./store";
+import { ReactQueryProvider } from "./providers";
+import { useAppSettingsStore } from "./shared/store";
 import { useEffect } from "react";
 
 function App() {
@@ -10,9 +10,9 @@ function App() {
   }, [isDarkMode]);
 
   return (
-    <ApolloClientProvider>
+    <ReactQueryProvider>
       <Routing />
-    </ApolloClientProvider>
+    </ReactQueryProvider>
   );
 }
 
