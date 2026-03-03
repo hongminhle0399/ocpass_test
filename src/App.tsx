@@ -1,5 +1,5 @@
 import Routing from "@/routing";
-import { ReactQueryProvider } from "./providers";
+import { RelayProvider } from "./providers";
 import { useAppSettingsStore } from "./shared/store";
 import { useEffect } from "react";
 
@@ -10,9 +10,9 @@ function App() {
   }, [isDarkMode]);
 
   return (
-    <ReactQueryProvider>
+    <RelayProvider>
       <Routing />
-    </ReactQueryProvider>
+    </RelayProvider>
   );
 }
 

@@ -1,1 +1,1 @@
-export { ReactQueryProvider } from './ReactQueryProvider'
+export { RelayProvider } from './RelayProvider'
