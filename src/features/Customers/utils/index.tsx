@@ -1,18 +1,20 @@
 import type {
-  CustomerModel,
-  CustomerQueryNode,
+  OrderModel,
+  OrderQueryNode
 } from "../types";
 
-export function toCustomerModel(customerNode: CustomerQueryNode): CustomerModel {
+export function toOrderModel(orderNode: OrderQueryNode): OrderModel {
   return {
-    id: customerNode.id,
-    city: customerNode.city ?? null,
-    companyName: customerNode.companyName,
-    contactName: customerNode.contactName ?? null,
-    contactTitle: customerNode.contactTitle ?? null,
-    country: customerNode.country ?? null,
-    phone: customerNode.phone ?? null,
-    postalCode: customerNode.postalCode ?? null
+    id: orderNode.id,
+    customerContactName: orderNode.customer?.contactName ?? null,
+    customerId: orderNode.customerId ?? null,
+    customerPhone: orderNode.customer?.phone ?? null,
+    employeeName: `${orderNode.employee?.firstName + " "}${orderNode.employee?.lastName}`,
+    orderDate: orderNode.orderDate,
+    shipAddress: orderNode.shipAddress ?? null,
+    shipCountry: orderNode.shipCountry ?? null,
+    shipName: orderNode.shipName ?? null,
+    shippedDate: orderNode.shippedDate,
   };
 }
 

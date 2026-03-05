@@ -1,1 +1,0 @@
-export { GET_CUSTOMERS_QUERY } from './query'

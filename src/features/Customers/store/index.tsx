@@ -1,23 +1,25 @@
 import { create } from "zustand";
-import type { CustomerFilterModel } from "../types";
-import { CUSTOMERS_FILTER_DEFAULT_STATE, TAKE_OPTIONS } from "../constants";
+import type { OrderFilterModel } from "../types";
+import { ORDERS_FILTER_DEFAULT_STATE, TAKE_OPTIONS } from "../constants";
 import { immer } from "zustand/middleware/immer";
 
-interface CustomersState {
-  customersFilter: CustomerFilterModel;
+interface OrdersState {
+  ordersFilter: OrderFilterModel;
   takeNumber: number;
-  updateCustomersFilter: (filter: Partial<CustomerFilterModel>) => void;
+  updateOrdersFilter: (order: Partial<OrderFilterModel>) => void;
   setTakeNumber: (takeNumber: number) => void;
 }
 
-export const useCustomersStore = create<CustomersState>()(
+export const useOrdersStore = create<OrdersState>()(
   immer((set) => ({
     takeNumber: TAKE_OPTIONS[0],
-    customersFilter: CUSTOMERS_FILTER_DEFAULT_STATE,
-    updateCustomersFilter: (filter: Partial<CustomerFilterModel>) => {
-      set((state) => {
-        Object.assign(state.customersFilter, filter);
-      });
+    ordersFilter: ORDERS_FILTER_DEFAULT_STATE,
+    updateOrdersFilter: (ordersFilter: Partial<OrderFilterModel>) => {
+      set(
+        (state) => {
+            Object.assign(state.ordersFilter, ordersFilter)
+        },
+      );
     },
     setTakeNumber: (take: number) => set((state) => (state.takeNumber = take)),
   })),

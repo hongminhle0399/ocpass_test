@@ -1,48 +1,43 @@
 import type {
-  OrderColumnItem,
-  CustomerFilterModel,
   CustomerFilterControl,
+  CustomerFilterModel,
+  CustomerModel
 } from "../types";
 
 export const DEFAULT_TAKE_NUMBER = 10;
 
 export const SCROLL_TABLE_TO_VIEW_DELAY = 500;
 
-export const CUSTOMERS_FILTER_DEFAULT_STATE: CustomerFilterModel = {
-  id: null,
-  phone: null,
+export const ORDERS_FILTER_DEFAULT_STATE: CustomerFilterModel = {
+  company: null,
   contactName: null,
+  id: null,
 };
 
 export const FILTER_CATEGORIES: CustomerFilterControl = {
   id: {
-    label: "Customer ID",
-    placeholder: "Filter By Customer ID",
     defaultValue: "",
+    label: "ID",
+    placeholder: "Filter by id",
   },
-  phone: {
-    label: "Phone Number",
-    placeholder: "Filter By Customer's Phone: 0123485373",
+  company: {
     defaultValue: "",
+    label: "Company",
+    placeholder: "Filter by company",
   },
   contactName: {
-    label: "Contact Name",
-    placeholder: "Filter By Contact's Name",
     defaultValue: "",
+    label: "Contact Name",
+    placeholder: "Filter by contact name",
   },
 };
 
-export const CUSTOMERS_COLUMN: OrderColumnItem = {
+export const ORDERS_COLUMNS: CustomerModel = {
   id: "ID",
-  city: "City",
-  companyName: "Company Name",
+  company: "Company",
   contactName: "Contact Name",
-  contactTitle: "Contact Title",
   country: "Country",
-  phone: "Phone",
-  postalCode: "Postal Code",
+  fax: "Fax",
 };
-
-export const CUSTOMERS_CACHE_KEY = "customers";
 
 export const TAKE_OPTIONS: number[] = [10, 20, 40];

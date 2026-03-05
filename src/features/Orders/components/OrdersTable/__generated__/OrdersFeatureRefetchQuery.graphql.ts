@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4cdd454a109b8d596f17e0c6f0cbdaf6>>
+ * @generated SignedSource<<9c23d86e0cb9fb766be1d5aea0f45ff2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,24 +10,44 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type OrdersFeatureQuery$variables = Record<PropertyKey, never>;
-export type OrdersFeatureQuery$data = {
+export type OrdersFeatureRefetchQuery$variables = {
+  count?: number | null | undefined;
+  cursor?: string | null | undefined;
+};
+export type OrdersFeatureRefetchQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"OrdersTable_query">;
 };
-export type OrdersFeatureQuery = {
-  response: OrdersFeatureQuery$data;
-  variables: OrdersFeatureQuery$variables;
+export type OrdersFeatureRefetchQuery = {
+  response: OrdersFeatureRefetchQuery$data;
+  variables: OrdersFeatureRefetchQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
-    "kind": "Literal",
-    "name": "first",
-    "value": 10
+    "defaultValue": 10,
+    "kind": "LocalArgument",
+    "name": "count"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "cursor"
   }
 ],
-v1 = {
+v1 = [
+  {
+    "kind": "Variable",
+    "name": "after",
+    "variableName": "cursor"
+  },
+  {
+    "kind": "Variable",
+    "name": "first",
+    "variableName": "count"
+  }
+],
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -36,13 +56,24 @@ v1 = {
 };
 return {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "OrdersFeatureQuery",
+    "name": "OrdersFeatureRefetchQuery",
     "selections": [
       {
-        "args": null,
+        "args": [
+          {
+            "kind": "Variable",
+            "name": "count",
+            "variableName": "count"
+          },
+          {
+            "kind": "Variable",
+            "name": "cursor",
+            "variableName": "cursor"
+          }
+        ],
         "kind": "FragmentSpread",
         "name": "OrdersTable_query"
       }
@@ -52,13 +83,13 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "OrdersFeatureQuery",
+    "name": "OrdersFeatureRefetchQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v0/*: any*/),
+        "args": (v1/*: any*/),
         "concreteType": "OrdersConnection",
         "kind": "LinkedField",
         "name": "orders",
@@ -80,7 +111,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v1/*: any*/),
+                  (v2/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -117,7 +148,7 @@ return {
                         "name": "phone",
                         "storageKey": null
                       },
-                      (v1/*: any*/)
+                      (v2/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -188,11 +219,11 @@ return {
             "storageKey": null
           }
         ],
-        "storageKey": "orders(first:10)"
+        "storageKey": null
       },
       {
         "alias": null,
-        "args": (v0/*: any*/),
+        "args": (v1/*: any*/),
         "filters": null,
         "handle": "connection",
         "key": "OrdersTable_orders",
@@ -202,16 +233,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3b030d766415648f817b621d9aaf7b0b",
+    "cacheID": "b8e2f9b64b17a26e1ad404c91577fb1b",
     "id": null,
     "metadata": {},
-    "name": "OrdersFeatureQuery",
+    "name": "OrdersFeatureRefetchQuery",
     "operationKind": "query",
-    "text": "query OrdersFeatureQuery {\n  ...OrdersTable_query\n}\n\nfragment OrdersTableRow_order on Order {\n  id\n  shipName\n  shipAddress\n  customer {\n    contactName\n    phone\n    id\n  }\n  freight\n  shippedDate\n  orderDate\n}\n\nfragment OrdersTable_query on Query {\n  orders(first: 10) {\n    edges {\n      node {\n        ...OrdersTableRow_order\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query OrdersFeatureRefetchQuery(\n  $count: Int = 10\n  $cursor: String\n) {\n  ...OrdersTable_query_1G22uz\n}\n\nfragment OrdersTableRow_order on Order {\n  id\n  shipName\n  shipAddress\n  customer {\n    contactName\n    phone\n    id\n  }\n  freight\n  shippedDate\n  orderDate\n}\n\nfragment OrdersTable_query_1G22uz on Query {\n  orders(first: $count, after: $cursor) {\n    edges {\n      node {\n        ...OrdersTableRow_order\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "515e3f9155f6ea2099685973a36ce32b";
+(node as any).hash = "17d6c336cb8344c9aabdd57a0adbd84a";
 
 export default node;

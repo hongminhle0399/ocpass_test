@@ -1,48 +1,42 @@
 import { FunnelIcon } from "@heroicons/react/24/outline";
 import {
   Button,
+  Drawer,
+  DrawerContent,
   Select,
   SelectItem,
+  useDisclosure,
   type SharedSelection,
 } from "@heroui/react";
-import { useState } from "react";
 import { TAKE_OPTIONS } from "../../constants";
-import { Filter } from "./Filter";
-import { useCustomersStore } from "../../store";
+import { useOrdersStore } from "../../store";
+import { FilterControls } from "./FilterControls";
 
 export const CustomersFilter = () => {
-  const [isFilter, setIsFilter] = useState<boolean>(false);
-  const setTakeNumber = useCustomersStore((state) => state.setTakeNumber);
-
-  const onFilterClick = () => {
-    setIsFilter(!isFilter);
-  };
+  const setTakeNumber = useOrdersStore((state) => state.setTakeNumber);
+  const takeNumber = useOrdersStore((state) => state.takeNumber);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const onTakeChange = (keys: SharedSelection) => {
-    if (keys.currentKey) {
-      setTakeNumber(parseInt(keys.currentKey));
-    }
+    setTakeNumber(parseInt(keys.currentKey!));
   };
 
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex gap-x-4 items-center md:p-0 px-4 pt-4">
-        <p className="text-2xl md:text-4xl md:ml-4 font-medium text-blue-600">
-          Customers
-        </p>
         <div className="flex gap-y-4 gap-x-4 ml-auto">
           <Select
             aria-label="Take a number of order"
             className="w-24 max-w-xs"
             onSelectionChange={onTakeChange}
-            defaultSelectedKeys={[String(TAKE_OPTIONS[0])]}
+            defaultSelectedKeys={[takeNumber]}
           >
             {TAKE_OPTIONS.map((item) => {
               return <SelectItem key={item}>{String(item)}</SelectItem>;
             })}
           </Select>
           <Button
-            onPress={onFilterClick}
+            onPress={onOpen}
             color="primary"
             startContent={<FunnelIcon className="size-4" />}
           >
@@ -50,7 +44,11 @@ export const CustomersFilter = () => {
           </Button>
         </div>
       </div>
-      {isFilter && <Filter />}
+      <Drawer onOpenChange={onOpenChange} isOpen={isOpen}>
+        <DrawerContent>
+          <FilterControls onApplyFilter={onOpenChange} />
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 };

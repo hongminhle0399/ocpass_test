@@ -1,20 +1,32 @@
+import { AppErrorBoundaries } from "@/AppErrorBoundaries";
 import { MainLayout } from "@/layouts";
-import { CustomerProfilePage, CustomersPage, NotFoundPage, OrdersPage } from "@/pages";
-import { BrowserRouter, Routes, Route } from "react-router";
+import { CustomersPage, NotFoundPage, OrdersPage } from "@/pages";
+import { DefaultError } from "@/shared/ui/DefaultError";
+import { createBrowserRouter, RouterProvider } from "react-router";
+
+const router = createBrowserRouter([
+  {
+    element: <MainLayout />,
+    errorElement: <DefaultError />,
+    children: [
+      {
+        path: "/orders",
+        element: <OrdersPage />,
+        handle: { pageName: "Orders" },
+      },
+      {
+        path: "/customers",
+        element: <CustomersPage />,
+        handle: { pageName: "Customers" },
+      },
+      // { path: "/customers/:id", element: <CustomerProfilePage /> },
+    ],
+  },
+  { path: "*", element: <NotFoundPage /> },
+]);
 
 const Routing = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<MainLayout />}>
-          <Route index path="/customers/:id" element={<CustomerProfilePage />} />
-          <Route index path="/customers" element={<CustomersPage />} />
-          <Route path="/orders" element={<OrdersPage />} />
-        </Route>
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default Routing;

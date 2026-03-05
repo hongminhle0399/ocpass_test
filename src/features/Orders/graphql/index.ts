@@ -1,1 +1,0 @@
-export { GET_ORDERS_QUERY } from './query'

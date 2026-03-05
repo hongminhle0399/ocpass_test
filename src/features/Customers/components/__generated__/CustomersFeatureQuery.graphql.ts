@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4cdd454a109b8d596f17e0c6f0cbdaf6>>
+ * @generated SignedSource<<b1b5ca88399a6b8d6ec02fca8b4bdba3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,13 +10,13 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type OrdersFeatureQuery$variables = Record<PropertyKey, never>;
-export type OrdersFeatureQuery$data = {
-  readonly " $fragmentSpreads": FragmentRefs<"OrdersTable_query">;
+export type CustomersFeatureQuery$variables = Record<PropertyKey, never>;
+export type CustomersFeatureQuery$data = {
+  readonly " $fragmentSpreads": FragmentRefs<"CustomersTable_query">;
 };
-export type OrdersFeatureQuery = {
-  response: OrdersFeatureQuery$data;
-  variables: OrdersFeatureQuery$variables;
+export type CustomersFeatureQuery = {
+  response: CustomersFeatureQuery$data;
+  variables: CustomersFeatureQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -26,25 +26,18 @@ var v0 = [
     "name": "first",
     "value": 10
   }
-],
-v1 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-};
+];
 return {
   "fragment": {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "OrdersFeatureQuery",
+    "name": "CustomersFeatureQuery",
     "selections": [
       {
         "args": null,
         "kind": "FragmentSpread",
-        "name": "OrdersTable_query"
+        "name": "CustomersTable_query"
       }
     ],
     "type": "Query",
@@ -54,20 +47,20 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "OrdersFeatureQuery",
+    "name": "CustomersFeatureQuery",
     "selections": [
       {
         "alias": null,
         "args": (v0/*: any*/),
-        "concreteType": "OrdersConnection",
+        "concreteType": "CustomersConnection",
         "kind": "LinkedField",
-        "name": "orders",
+        "name": "customers",
         "plural": false,
         "selections": [
           {
             "alias": null,
             "args": null,
-            "concreteType": "OrdersEdge",
+            "concreteType": "CustomersEdge",
             "kind": "LinkedField",
             "name": "edges",
             "plural": true,
@@ -75,71 +68,51 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "concreteType": "Order",
+                "concreteType": "Customer",
                 "kind": "LinkedField",
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v1/*: any*/),
                   {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "shipName",
+                    "name": "id",
                     "storageKey": null
                   },
                   {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "shipAddress",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "concreteType": "Customer",
-                    "kind": "LinkedField",
-                    "name": "customer",
-                    "plural": false,
-                    "selections": [
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "contactName",
-                        "storageKey": null
-                      },
-                      {
-                        "alias": null,
-                        "args": null,
-                        "kind": "ScalarField",
-                        "name": "phone",
-                        "storageKey": null
-                      },
-                      (v1/*: any*/)
-                    ],
+                    "name": "contactName",
                     "storageKey": null
                   },
                   {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "freight",
+                    "name": "city",
                     "storageKey": null
                   },
                   {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "shippedDate",
+                    "name": "fax",
                     "storageKey": null
                   },
                   {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "orderDate",
+                    "name": "companyName",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "country",
                     "storageKey": null
                   },
                   {
@@ -188,30 +161,30 @@ return {
             "storageKey": null
           }
         ],
-        "storageKey": "orders(first:10)"
+        "storageKey": "customers(first:10)"
       },
       {
         "alias": null,
         "args": (v0/*: any*/),
         "filters": null,
         "handle": "connection",
-        "key": "OrdersTable_orders",
+        "key": "CustomersTable_customers",
         "kind": "LinkedHandle",
-        "name": "orders"
+        "name": "customers"
       }
     ]
   },
   "params": {
-    "cacheID": "3b030d766415648f817b621d9aaf7b0b",
+    "cacheID": "c388472dfa7bfcc3bd6a436c138d64bb",
     "id": null,
     "metadata": {},
-    "name": "OrdersFeatureQuery",
+    "name": "CustomersFeatureQuery",
     "operationKind": "query",
-    "text": "query OrdersFeatureQuery {\n  ...OrdersTable_query\n}\n\nfragment OrdersTableRow_order on Order {\n  id\n  shipName\n  shipAddress\n  customer {\n    contactName\n    phone\n    id\n  }\n  freight\n  shippedDate\n  orderDate\n}\n\nfragment OrdersTable_query on Query {\n  orders(first: 10) {\n    edges {\n      node {\n        ...OrdersTableRow_order\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query CustomersFeatureQuery {\n  ...CustomersTable_query\n}\n\nfragment CustomersTableRow_customer on Customer {\n  id\n  contactName\n  city\n  fax\n  companyName\n  country\n}\n\nfragment CustomersTable_query on Query {\n  customers(first: 10) {\n    edges {\n      node {\n        ...CustomersTableRow_customer\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "515e3f9155f6ea2099685973a36ce32b";
+(node as any).hash = "b5026d0488d391714fc2aea34a3fa229";
 
 export default node;
