@@ -32,7 +32,6 @@ export const CustomerDetailFeature = ({ customerId }: CustomerDetailFeatureProps
     if (!customer) {
         return (
             <div className="flex flex-col items-center justify-center py-24 text-gray-400 dark:text-gray-500 gap-3">
-                <p className="text-5xl">🏢</p>
                 <p className="text-lg font-medium">Customer not found</p>
                 <p className="text-sm">No customer with ID: {customerId}</p>
             </div>

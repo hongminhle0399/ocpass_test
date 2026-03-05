@@ -36,7 +36,6 @@ export const OrderDetailFeature = ({ orderId }: OrderDetailFeatureProps) => {
     if (!order) {
         return (
             <div className="flex flex-col items-center justify-center py-24 text-gray-400 dark:text-gray-500 gap-3">
-                <p className="text-5xl">📦</p>
                 <p className="text-lg font-medium">Order not found</p>
                 <p className="text-sm">No order with ID: {orderId}</p>
             </div>
