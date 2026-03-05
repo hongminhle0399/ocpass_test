@@ -1,0 +1,1 @@
+export { CustomerDetailFeature } from "./CustomerDetailFeature";

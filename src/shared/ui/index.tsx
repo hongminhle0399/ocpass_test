@@ -1,2 +1,5 @@
 export { BrandLogo } from './BrandLogo'
 export { TablePagination } from './TablePagination'
+export { DetailSection } from './DetailSection'
+export { DetailInfoRow } from './DetailInfoRow'
+export { BackButton } from './BackButton'
