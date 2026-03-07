@@ -32,7 +32,7 @@ export const OrdersFilter = () => {
             defaultSelectedKeys={[takeNumber]}
           >
             {TAKE_OPTIONS.map((item) => {
-              return <SelectItem key={item}>{String(item)}</SelectItem>;
+              return <SelectItem key={item}>{item}</SelectItem>
             })}
           </Select>
           <Button

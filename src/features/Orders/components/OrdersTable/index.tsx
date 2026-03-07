@@ -1,11 +1,12 @@
 import { Avatar, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
 import { useMemo } from "react";
-import { graphql, usePaginationFragment } from "react-relay";
+import { graphql, usePaginationFragment, useRelayEnvironment } from "react-relay";
 import { useNavigate } from "react-router";
 import { useOrdersStore } from "../../store";
 import { TablePagination } from "@/shared/ui";
 import { typedKeys } from "@/shared/types/utils";
 import { ORDERS_COLUMNS } from "../../constants";
+import { getOrLoadOrderDetailsQuery } from "@/features/OrderDetails/components/OrderDetailsFeature";
 import type { OrdersTable_query$key } from "./__generated__/OrdersTable_query.graphql";
 import type { OrdersFeatureRefetchQuery as OrdersFeatureRefetchQueryType } from "./__generated__/OrdersFeatureRefetchQuery.graphql";
 
@@ -54,6 +55,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
   >(ordersTableFragment, orders);
 
   const takeNumber = useOrdersStore((state) => state.takeNumber);
+  const environment = useRelayEnvironment();
 
   const toNextPage = () => {
     loadNext(takeNumber);
@@ -71,12 +73,25 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 
   const navigate = useNavigate();
 
+  const handleMouseEnter = (id: string) => () => {
+    getOrLoadOrderDetailsQuery(environment, id);
+  };
+
+  const handleRowClick = (id: string) => () => {
+    navigate(`/orders/${id}`);
+  };
+
   return (
     <Table
       isHeaderSticky
       color="primary"
       fullWidth
       aria-label="Table with orders data"
+      classNames={{
+        base: "max-h-[520px] overflow-scroll",
+        table: "min-h-[420px]",
+        td: "whitespace-nowrap overflow-hidden text-ellipsis max-w-60",
+      }}
       bottomContent={
         <TablePagination
           hasNext={hasNext}
@@ -98,9 +113,14 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
       >
         {(item) => {
           const node = item.node;
-          console.log(node);
           return (
-            <TableRow key={node.id} onClick={() => navigate(`/orders/${node.id}`)}>
+            <TableRow
+              key={node.id}
+              onClick={handleRowClick(node.id)}
+              onMouseEnter={handleMouseEnter(node.id)}
+              onPointerDown={handleMouseEnter(node.id)}
+              className="cursor-pointer"
+            >
               <TableCell>
                 <p>{node.id}</p>
               </TableCell>

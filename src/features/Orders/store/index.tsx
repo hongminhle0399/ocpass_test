@@ -17,7 +17,7 @@ export const useOrdersStore = create<OrdersState>()(
     updateOrdersFilter: (ordersFilter: Partial<OrderFilterModel>) => {
       set(
         (state) => {
-            Object.assign(state.ordersFilter, ordersFilter)
+          Object.assign(state.ordersFilter, ordersFilter)
         },
       );
     },

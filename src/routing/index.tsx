@@ -1,6 +1,6 @@
 import { AppErrorBoundaries } from "@/AppErrorBoundaries";
 import { MainLayout } from "@/layouts";
-import { CustomersPage, NotFoundPage, OrdersPage, CustomerProfilePage, OrderDetailPage } from "@/pages";
+import { CustomersPage, NotFoundPage, OrdersPage, CustomerProfilePage, OrderDetailsPage } from "@/pages";
 import { DefaultError } from "@/shared/ui/DefaultError";
 import { createBrowserRouter, RouterProvider } from "react-router";
 
@@ -16,7 +16,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/orders/:id",
-        element: <OrderDetailPage />,
+        element: <OrderDetailsPage />,
         handle: { pageName: "Order Detail" },
       },
       {

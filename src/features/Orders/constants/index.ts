@@ -38,4 +38,4 @@ export const ORDERS_COLUMNS: OrderColumn = {
   shipAddress: "Ship Address",
 };
 
-export const TAKE_OPTIONS: number[] = [10, 20, 40]
+export const TAKE_OPTIONS: string[] = [10, 20, 40].map(String)

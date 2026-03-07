@@ -3,6 +3,8 @@ import { useLazyLoadQuery } from "react-relay";
 import type { OrdersFeatureQuery as OrdersFeatureQueryType } from "./__generated__/OrdersFeatureQuery.graphql";
 import { OrdersTable } from "./OrdersTable";
 import { OrdersFilter } from "./OrdersFilter";
+import { Suspense } from "react";
+import { Loading } from "@/shared/ui";
 
 
 const ordersFeatureQuery = graphql`
@@ -16,8 +18,10 @@ export const OrdersFeature = () => {
 
   return (
     <div className="flex flex-col gap-y-4">
-      <OrdersFilter />
-      <OrdersTable orders={data} />
+      <Suspense fallback={<Loading label="Loading orders..." />}>
+        <OrdersFilter />
+        <OrdersTable orders={data} />
+      </Suspense>
     </div>
   );
 };
