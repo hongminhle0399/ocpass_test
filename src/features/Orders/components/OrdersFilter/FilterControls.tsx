@@ -24,9 +24,9 @@ export function FilterControls({ onApplyFilter }: FilterControlsProps) {
 
   const provideFilterHandler = useCallback((orderKey: OrderFilterModelKey) => {
     const callbacks: FilterHanlderProvider = {
-      customerId: (event: ChangeEvent<HTMLInputElement>) => {
-        updateOrdersFilter({ customerId: event?.target.value });
-      },
+      // customerId: (event: ChangeEvent<HTMLInputElement>) => {
+      //   updateOrdersFilter({ customerId: event?.target.value });
+      // },
       customerPhone: (event: ChangeEvent<HTMLInputElement>) => {
         updateOrdersFilter({ customerPhone: event?.target.value });
       },
@@ -36,9 +36,9 @@ export function FilterControls({ onApplyFilter }: FilterControlsProps) {
       shippedDateRange: (value: DatePickerValue) => {
         updateOrdersFilter({ shippedDateRange: value });
       },
-      shipAddress: (event: ChangeEvent<HTMLInputElement>) => {
-        updateOrdersFilter({ shipAddress: event?.target.value });
-      },
+      // shipAddress: (event: ChangeEvent<HTMLInputElement>) => {
+      //   updateOrdersFilter({ shipAddress: event?.target.value });
+      // },
     };
     return callbacks[orderKey];
   }, []);
@@ -81,11 +81,11 @@ export function FilterControls({ onApplyFilter }: FilterControlsProps) {
     if (!FILTER_CATEGORIES[filterKey]) return null;
     switch (filterKey) {
       // case "id":
-      case "customerId":
+      // case "customerId":
       case "customerPhone":
-      // case "customerContactName":
-      // case "employeeName":
-      case "shipAddress":
+        // case "customerContactName":
+        // case "employeeName":
+        // case "shipAddress":
         // case "shipCountry":
         // case "shipName":
         return renderInputFilter(filterKey);

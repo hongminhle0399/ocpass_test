@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4cdd454a109b8d596f17e0c6f0cbdaf6>>
+ * @generated SignedSource<<bea2266cd064bc776d5d94b0ad40b218>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -125,13 +125,6 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "freight",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
                     "name": "shippedDate",
                     "storageKey": null
                   },
@@ -202,12 +195,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3b030d766415648f817b621d9aaf7b0b",
+    "cacheID": "6d75d04e2b36e06a9c064032d0c97025",
     "id": null,
     "metadata": {},
     "name": "OrdersFeatureQuery",
     "operationKind": "query",
-    "text": "query OrdersFeatureQuery {\n  ...OrdersTable_query\n}\n\nfragment OrdersTableRow_order on Order {\n  id\n  shipName\n  shipAddress\n  customer {\n    contactName\n    phone\n    id\n  }\n  freight\n  shippedDate\n  orderDate\n}\n\nfragment OrdersTable_query on Query {\n  orders(first: 10) {\n    edges {\n      node {\n        ...OrdersTableRow_order\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query OrdersFeatureQuery {\n  ...OrdersTable_query\n}\n\nfragment OrdersTable_query on Query {\n  orders(first: 10) {\n    edges {\n      node {\n        id\n        shipName\n        shipAddress\n        customer {\n          contactName\n          phone\n          id\n        }\n        shippedDate\n        orderDate\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

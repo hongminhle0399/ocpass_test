@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<01da512224e4d5cba2fa425ab9ced40f>>
+ * @generated SignedSource<<71edca8d07ccbe2746845c1b2a6f4b13>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,7 +14,15 @@ export type OrdersTable_query$data = {
   readonly orders: {
     readonly edges: ReadonlyArray<{
       readonly node: {
-        readonly " $fragmentSpreads": FragmentRefs<"OrdersTableRow_order">;
+        readonly customer: {
+          readonly contactName: string | null | undefined;
+          readonly phone: string | null | undefined;
+        } | null | undefined;
+        readonly id: string;
+        readonly orderDate: any | null | undefined;
+        readonly shipAddress: string | null | undefined;
+        readonly shipName: string | null | undefined;
+        readonly shippedDate: any | null | undefined;
       };
     }> | null | undefined;
   } | null | undefined;
@@ -94,9 +102,64 @@ return {
               "plural": false,
               "selections": [
                 {
+                  "alias": null,
                   "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "OrdersTableRow_order"
+                  "kind": "ScalarField",
+                  "name": "id",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "shipName",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "shipAddress",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "concreteType": "Customer",
+                  "kind": "LinkedField",
+                  "name": "customer",
+                  "plural": false,
+                  "selections": [
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "contactName",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "phone",
+                      "storageKey": null
+                    }
+                  ],
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "shippedDate",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "orderDate",
+                  "storageKey": null
                 },
                 {
                   "alias": null,
@@ -152,6 +215,6 @@ return {
 };
 })();
 
-(node as any).hash = "17d6c336cb8344c9aabdd57a0adbd84a";
+(node as any).hash = "16147966858bae51adf4fe6d067f09c0";
 
 export default node;

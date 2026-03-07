@@ -1,18 +1,20 @@
 import type { RangeValue } from "@heroui/react";
 import type { DateValue } from "@internationalized/date";
 
-export type OrderModel = {
+export type OrderColumn = {
   id: string | null;
   shipName: string | null;
   shipAddress: string | null;
   orderDate: string | null;
-  customerPhone: string | null;
+  customer: string | null;
 };
 
 // FOR FILTER
 export type DatePickerValue = RangeValue<DateValue>;
 
-export type InputFilterField = Pick<OrderModel, "customerPhone">;
+export type InputFilterField = {
+  customerPhone: string | null
+}
 export type DateFilterField = {
   orderDateRange: DatePickerValue | null
   shippedDateRange: DatePickerValue | null
@@ -35,8 +37,8 @@ export type DateFilter<T = DatePickerValue> = {
 
 export type OrderFilterControl = {
   [K in OrderFilterModelKey]: K extends keyof InputFilterField
-    ? InputFilter<OrderFilterModel[K]>
-    : DateFilter<OrderFilterModel[K]> | null;
+  ? InputFilter<OrderFilterModel[K]>
+  : DateFilter<OrderFilterModel[K]> | null;
 };
 
 export type OrderFilterControlKey = keyof OrderFilterControl;

@@ -14,7 +14,7 @@ export const TablePagination = ({
   loadPrevious,
 }: TablePaginationProps) => {
   return (
-    <div className="hidden sm:flex w-[30%] justify-end gap-2">
+    <div className="flex w-full justify-end gap-2">
       <Button
         isDisabled={hasPrevious}
         size="sm"

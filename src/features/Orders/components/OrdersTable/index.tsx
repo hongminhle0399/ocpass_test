@@ -1,12 +1,13 @@
-import { Spinner, Table, TableBody } from "@heroui/react";
+import { Avatar, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
 import { useMemo } from "react";
 import { graphql, usePaginationFragment } from "react-relay";
-import { OrdersTableHeader } from "./OrdersTableHeader";
-import { OrdersTableRow } from "./OrdersTableRow";
-import type { OrdersTable_query$key } from "./__generated__/OrdersTable_query.graphql";
-import type { OrdersFeatureRefetchQuery as OrdersFeatureRefetchQueryType } from "./__generated__/OrdersFeatureRefetchQuery.graphql";
+import { useNavigate } from "react-router";
 import { useOrdersStore } from "../../store";
 import { TablePagination } from "@/shared/ui";
+import { typedKeys } from "@/shared/types/utils";
+import { ORDERS_COLUMNS } from "../../constants";
+import type { OrdersTable_query$key } from "./__generated__/OrdersTable_query.graphql";
+import type { OrdersFeatureRefetchQuery as OrdersFeatureRefetchQueryType } from "./__generated__/OrdersFeatureRefetchQuery.graphql";
 
 const ordersTableFragment = graphql`
   fragment OrdersTable_query on Query
@@ -19,7 +20,15 @@ const ordersTableFragment = graphql`
       @connection(key: "OrdersTable_orders") {
       edges {
         node {
-          ...OrdersTableRow_order
+          id
+          shipName
+          shipAddress
+          customer {
+            contactName
+            phone
+          }
+          shippedDate
+          orderDate
         }
       }
     }
@@ -55,19 +64,19 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
   };
 
   const isLoading = isLoadingNext || isLoadingPrevious;
-  const ordersList = useMemo(() => data.orders?.edges || [], [data.orders]);
+  const ordersList = useMemo(
+    () => data.orders?.edges || undefined,
+    [data.orders?.edges],
+  );
+
+  const navigate = useNavigate();
+
   return (
     <Table
       isHeaderSticky
       color="primary"
       fullWidth
-      selectionMode="single"
       aria-label="Table with orders data"
-      classNames={{
-        base: "max-h-[520px] overflow-scroll",
-        table: "min-h-[420px]",
-        td: "whitespace-nowrap overflow-hidden text-ellipsis max-w-60",
-      }}
       bottomContent={
         <TablePagination
           hasNext={hasNext}
@@ -77,14 +86,44 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
         />
       }
     >
-      <OrdersTableHeader />
+      <TableHeader>
+        {typedKeys(ORDERS_COLUMNS).map((key) => {
+          return <TableColumn key={key}>{ORDERS_COLUMNS[key]}</TableColumn>;
+        })}
+      </TableHeader>
       <TableBody
         isLoading={isLoading}
         items={ordersList}
         loadingContent={<Spinner label="Loading..." />}
       >
         {(item) => {
-          return <OrdersTableRow order={item.node} />;
+          const node = item.node;
+          console.log(node);
+          return (
+            <TableRow key={node.id} onClick={() => navigate(`/orders/${node.id}`)}>
+              <TableCell>
+                <p>{node.id}</p>
+              </TableCell>
+              <TableCell>{node.orderDate}</TableCell>
+              <TableCell>
+                <div className="flex gap-x-2">
+                  <Avatar name={node.customer?.contactName || ""} />
+                  <div className="flex flex-col">
+                    <p className="text-md whitespace-nowrap overflow-hidden text-ellipsis">
+                      <span className="font-bold">
+                        {node.customer?.contactName || ""}
+                      </span>
+                    </p>
+                    <p className="whitespace-nowrap overflow-hidden text-ellipsis text-gray-500">
+                      {node.customer?.phone}
+                    </p>
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell>{node.shipName}</TableCell>
+              <TableCell>{node.shipAddress}</TableCell>
+            </TableRow>
+          );
         }}
       </TableBody>
     </Table>

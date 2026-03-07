@@ -1,7 +1,7 @@
 import type {
   OrderFilterModel,
   OrderFilterControl,
-  OrderModel
+  OrderColumn
 } from "../types";
 
 export const DEFAULT_TAKE_NUMBER = 10;
@@ -30,12 +30,12 @@ export const FILTER_CATEGORIES: OrderFilterControl = {
   }
 };
 
-export const ORDERS_COLUMNS: OrderModel = {
+export const ORDERS_COLUMNS: OrderColumn = {
   id: "ID",
   orderDate: "Order Date",
+  customer: "Customer",
   shipName: "Ship Name",
   shipAddress: "Ship Address",
-  customerPhone: "Customer Phone",
 };
 
 export const TAKE_OPTIONS: number[] = [10, 20, 40]

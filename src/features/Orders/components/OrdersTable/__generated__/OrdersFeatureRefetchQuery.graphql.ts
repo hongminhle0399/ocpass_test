@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9c23d86e0cb9fb766be1d5aea0f45ff2>>
+ * @generated SignedSource<<7b5d56c1cb098844df30025fb31dee98>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -156,13 +156,6 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "freight",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
                     "name": "shippedDate",
                     "storageKey": null
                   },
@@ -233,16 +226,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "b8e2f9b64b17a26e1ad404c91577fb1b",
+    "cacheID": "2c0d62e9e227b0662ca0c6370d597dfd",
     "id": null,
     "metadata": {},
     "name": "OrdersFeatureRefetchQuery",
     "operationKind": "query",
-    "text": "query OrdersFeatureRefetchQuery(\n  $count: Int = 10\n  $cursor: String\n) {\n  ...OrdersTable_query_1G22uz\n}\n\nfragment OrdersTableRow_order on Order {\n  id\n  shipName\n  shipAddress\n  customer {\n    contactName\n    phone\n    id\n  }\n  freight\n  shippedDate\n  orderDate\n}\n\nfragment OrdersTable_query_1G22uz on Query {\n  orders(first: $count, after: $cursor) {\n    edges {\n      node {\n        ...OrdersTableRow_order\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query OrdersFeatureRefetchQuery(\n  $count: Int = 10\n  $cursor: String\n) {\n  ...OrdersTable_query_1G22uz\n}\n\nfragment OrdersTable_query_1G22uz on Query {\n  orders(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        shipName\n        shipAddress\n        customer {\n          contactName\n          phone\n          id\n        }\n        shippedDate\n        orderDate\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "17d6c336cb8344c9aabdd57a0adbd84a";
+(node as any).hash = "16147966858bae51adf4fe6d067f09c0";
 
 export default node;

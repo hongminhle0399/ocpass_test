@@ -3,7 +3,7 @@ import { useLazyLoadQuery } from "react-relay";
 import type { OrderDetailFeatureQuery as OrderDetailFeatureQueryType } from "./__generated__/OrderDetailFeatureQuery.graphql";
 import { OrderDetailHero } from "./OrderDetailHero";
 import { OrderShippingInfo } from "./OrderShippingInfo";
-import { OrderCustomerInfo } from "./OrderCustomerInfo";
+// import { OrderCustomerInfo } from "./OrderCustomerInfo";
 import { OrderItemsTable } from "./OrderItemsTable";
 import { OrderEmployee } from "./OrderEmployee";
 
@@ -13,7 +13,6 @@ const orderDetailFeatureQuery = graphql`
       ... on Order {
         ...OrderDetailHero_order
         ...OrderShippingInfo_order
-        ...OrderCustomerInfo_order
         ...OrderItemsTable_order
         ...OrderEmployee_order
       }
@@ -47,11 +46,11 @@ export const OrderDetailFeature = ({ orderId }: OrderDetailFeatureProps) => {
         <div className="max-w-5xl mx-auto">
             <OrderDetailHero order={order} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-                <div className="lg:col-span-2 space-y-4">
-                    <OrderCustomerInfo order={order} />
-                    <OrderEmployee order={order} />
-                </div>
+            <div className="grid grid-cols-1 gap-4 mb-4">
+                {/* <div className="lg:col-span-2 space-y-4"> */}
+                {/* <OrderCustomerInfo order={order} /> */}
+                <OrderEmployee order={order} />
+                {/* </div> */}
                 <div className="space-y-4">
                     <OrderShippingInfo order={order} />
                 </div>
