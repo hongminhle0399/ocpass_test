@@ -18,11 +18,11 @@ export const OrdersFilter = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const onTakeChange = (keys: SharedSelection) => {
-    setTakeNumber(parseInt(keys.currentKey!));
+    setTakeNumber(keys.currentKey!);
   };
 
   return (
-    <div className="flex flex-col gap-y-4">
+    <div className="flex flex-col gap-y-4 shrink-0">
       <div className="flex gap-x-4 items-center md:p-0 px-4 pt-4">
         <div className="flex gap-y-4 gap-x-4 ml-auto">
           <Select

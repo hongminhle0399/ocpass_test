@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7b5d56c1cb098844df30025fb31dee98>>
+ * @generated SignedSource<<120ff7a59cc1ba4562c92826677eac6c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -35,19 +35,7 @@ var v0 = [
     "name": "cursor"
   }
 ],
-v1 = [
-  {
-    "kind": "Variable",
-    "name": "after",
-    "variableName": "cursor"
-  },
-  {
-    "kind": "Variable",
-    "name": "first",
-    "variableName": "count"
-  }
-],
-v2 = {
+v1 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -89,7 +77,18 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": [
+          {
+            "kind": "Variable",
+            "name": "after",
+            "variableName": "cursor"
+          },
+          {
+            "kind": "Variable",
+            "name": "first",
+            "variableName": "count"
+          }
+        ],
         "concreteType": "OrdersConnection",
         "kind": "LinkedField",
         "name": "orders",
@@ -111,7 +110,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v2/*: any*/),
+                  (v1/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -148,7 +147,7 @@ return {
                         "name": "phone",
                         "storageKey": null
                       },
-                      (v2/*: any*/)
+                      (v1/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -165,22 +164,8 @@ return {
                     "kind": "ScalarField",
                     "name": "orderDate",
                     "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "__typename",
-                    "storageKey": null
                   }
                 ],
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "cursor",
                 "storageKey": null
               }
             ],
@@ -198,6 +183,20 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
+                "name": "hasNextPage",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "hasPreviousPage",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
                 "name": "endCursor",
                 "storageKey": null
               },
@@ -205,7 +204,7 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "hasNextPage",
+                "name": "startCursor",
                 "storageKey": null
               }
             ],
@@ -213,29 +212,20 @@ return {
           }
         ],
         "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": (v1/*: any*/),
-        "filters": null,
-        "handle": "connection",
-        "key": "OrdersTable_orders",
-        "kind": "LinkedHandle",
-        "name": "orders"
       }
     ]
   },
   "params": {
-    "cacheID": "2c0d62e9e227b0662ca0c6370d597dfd",
+    "cacheID": "31f4e23c1bcc6d9e74eab3acb8dd9b46",
     "id": null,
     "metadata": {},
     "name": "OrdersFeatureRefetchQuery",
     "operationKind": "query",
-    "text": "query OrdersFeatureRefetchQuery(\n  $count: Int = 10\n  $cursor: String\n) {\n  ...OrdersTable_query_1G22uz\n}\n\nfragment OrdersTable_query_1G22uz on Query {\n  orders(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        shipName\n        shipAddress\n        customer {\n          contactName\n          phone\n          id\n        }\n        shippedDate\n        orderDate\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query OrdersFeatureRefetchQuery(\n  $count: Int = 10\n  $cursor: String\n) {\n  ...OrdersTable_query_1G22uz\n}\n\nfragment OrdersTable_query_1G22uz on Query {\n  orders(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        shipName\n        shipAddress\n        customer {\n          contactName\n          phone\n          id\n        }\n        shippedDate\n        orderDate\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      endCursor\n      startCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "16147966858bae51adf4fe6d067f09c0";
+(node as any).hash = "e4270c7664d78dfe52212020ca8e20b4";
 
 export default node;

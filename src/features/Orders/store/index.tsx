@@ -5,9 +5,9 @@ import { immer } from "zustand/middleware/immer";
 
 interface OrdersState {
   ordersFilter: OrderFilterModel;
-  takeNumber: number;
+  takeNumber: string;
   updateOrdersFilter: (order: Partial<OrderFilterModel>) => void;
-  setTakeNumber: (takeNumber: number) => void;
+  setTakeNumber: (takeNumber: string) => void;
 }
 
 export const useOrdersStore = create<OrdersState>()(
@@ -21,6 +21,6 @@ export const useOrdersStore = create<OrdersState>()(
         },
       );
     },
-    setTakeNumber: (take: number) => set((state) => (state.takeNumber = take)),
+    setTakeNumber: (take: string) => set((state) => { state.takeNumber = take }),
   })),
 );

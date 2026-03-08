@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<71edca8d07ccbe2746845c1b2a6f4b13>>
+ * @generated SignedSource<<aa0cf4024924e49415048c9dad7f5c6c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -25,6 +25,12 @@ export type OrdersTable_query$data = {
         readonly shippedDate: any | null | undefined;
       };
     }> | null | undefined;
+    readonly pageInfo: {
+      readonly endCursor: string | null | undefined;
+      readonly hasNextPage: boolean;
+      readonly hasPreviousPage: boolean;
+      readonly startCursor: string | null | undefined;
+    };
   } | null | undefined;
   readonly " $fragmentType": "OrdersTable_query";
 };
@@ -35,11 +41,7 @@ export type OrdersTable_query$key = {
 
 import OrdersFeatureRefetchQuery_graphql from './OrdersFeatureRefetchQuery.graphql';
 
-const node: ReaderFragment = (function(){
-var v0 = [
-  "orders"
-];
-return {
+const node: ReaderFragment = {
   "argumentDefinitions": [
     {
       "defaultValue": 10,
@@ -54,23 +56,8 @@ return {
   ],
   "kind": "Fragment",
   "metadata": {
-    "connection": [
-      {
-        "count": "count",
-        "cursor": "cursor",
-        "direction": "forward",
-        "path": (v0/*: any*/)
-      }
-    ],
     "refetch": {
-      "connection": {
-        "forward": {
-          "count": "count",
-          "cursor": "cursor"
-        },
-        "backward": null,
-        "path": (v0/*: any*/)
-      },
+      "connection": null,
       "fragmentPathInResult": [],
       "operation": OrdersFeatureRefetchQuery_graphql
     }
@@ -78,11 +65,22 @@ return {
   "name": "OrdersTable_query",
   "selections": [
     {
-      "alias": "orders",
-      "args": null,
+      "alias": null,
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "after",
+          "variableName": "cursor"
+        },
+        {
+          "kind": "Variable",
+          "name": "first",
+          "variableName": "count"
+        }
+      ],
       "concreteType": "OrdersConnection",
       "kind": "LinkedField",
-      "name": "__OrdersTable_orders_connection",
+      "name": "orders",
       "plural": false,
       "selections": [
         {
@@ -160,22 +158,8 @@ return {
                   "kind": "ScalarField",
                   "name": "orderDate",
                   "storageKey": null
-                },
-                {
-                  "alias": null,
-                  "args": null,
-                  "kind": "ScalarField",
-                  "name": "__typename",
-                  "storageKey": null
                 }
               ],
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "cursor",
               "storageKey": null
             }
           ],
@@ -193,6 +177,20 @@ return {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
+              "name": "hasNextPage",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "hasPreviousPage",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
               "name": "endCursor",
               "storageKey": null
             },
@@ -200,7 +198,7 @@ return {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
-              "name": "hasNextPage",
+              "name": "startCursor",
               "storageKey": null
             }
           ],
@@ -213,8 +211,7 @@ return {
   "type": "Query",
   "abstractKey": null
 };
-})();
 
-(node as any).hash = "16147966858bae51adf4fe6d067f09c0";
+(node as any).hash = "e4270c7664d78dfe52212020ca8e20b4";
 
 export default node;

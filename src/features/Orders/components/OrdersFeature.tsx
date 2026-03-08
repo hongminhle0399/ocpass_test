@@ -17,7 +17,7 @@ export const OrdersFeature = () => {
   const data = useLazyLoadQuery<OrdersFeatureQueryType>(ordersFeatureQuery, {});
 
   return (
-    <div className="flex flex-col gap-y-4">
+    <div className="flex flex-col gap-y-4 flex-1 min-h-0">
       <Suspense fallback={<Loading label="Loading orders..." />}>
         <OrdersFilter />
         <OrdersTable orders={data} />

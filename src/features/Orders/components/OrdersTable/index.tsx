@@ -1,14 +1,13 @@
-import { Avatar, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
-import { useMemo } from "react";
-import { graphql, usePaginationFragment, useRelayEnvironment } from "react-relay";
-import { useNavigate } from "react-router";
-import { useOrdersStore } from "../../store";
-import { TablePagination } from "@/shared/ui";
-import { typedKeys } from "@/shared/types/utils";
-import { ORDERS_COLUMNS } from "../../constants";
 import { getOrLoadOrderDetailsQuery } from "@/features/OrderDetails/components/OrderDetailsFeature";
+import { typedKeys } from "@/shared/types/utils";
+import { TablePagination } from "@/shared/ui";
+import { Avatar, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { graphql, useRefetchableFragment, useRelayEnvironment } from "react-relay";
+import { useNavigate } from "react-router";
+import { ORDERS_COLUMNS } from "../../constants";
+import { useOrdersStore } from "../../store";
 import type { OrdersTable_query$key } from "./__generated__/OrdersTable_query.graphql";
-import type { OrdersFeatureRefetchQuery as OrdersFeatureRefetchQueryType } from "./__generated__/OrdersFeatureRefetchQuery.graphql";
 
 const ordersTableFragment = graphql`
   fragment OrdersTable_query on Query
@@ -17,8 +16,7 @@ const ordersTableFragment = graphql`
     count: { type: "Int", defaultValue: 10 }
   )
   @refetchable(queryName: "OrdersFeatureRefetchQuery") {
-    orders(first: $count, after: $cursor)
-      @connection(key: "OrdersTable_orders") {
+    orders(first: $count, after: $cursor) {
       edges {
         node {
           id
@@ -32,6 +30,12 @@ const ordersTableFragment = graphql`
           orderDate
         }
       }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        endCursor
+        startCursor
+      }
     }
   }
 `;
@@ -41,34 +45,48 @@ interface OrdersTableProps {
 }
 
 export const OrdersTable = ({ orders }: OrdersTableProps) => {
-  const {
-    data,
-    isLoadingNext,
-    isLoadingPrevious,
-    hasNext,
-    hasPrevious,
-    loadNext,
-    loadPrevious,
-  } = usePaginationFragment<
-    OrdersFeatureRefetchQueryType,
-    OrdersTable_query$key
-  >(ordersTableFragment, orders);
+  const [data, refetch] = useRefetchableFragment(ordersTableFragment, orders);
 
   const takeNumber = useOrdersStore((state) => state.takeNumber);
   const environment = useRelayEnvironment();
 
+  const [isPending, setTransition] = useTransition()
+  const currentCursor = useRef<string | undefined | null>(undefined)
+
+  useEffect(() => {
+  }, [data.orders?.pageInfo])
+
   const toNextPage = () => {
-    loadNext(takeNumber);
+    setTransition(() => {
+      refetch({ count: Number(takeNumber), cursor: data?.orders?.pageInfo?.endCursor }, {
+        fetchPolicy: 'store-or-network'
+      })
+      currentCursor.current = data.orders?.pageInfo?.endCursor
+    })
   };
 
   const toPreviousPage = () => {
-    loadPrevious(takeNumber);
+    setTransition(() => {
+      refetch({ count: Number(takeNumber), cursor: data?.orders?.pageInfo?.startCursor }, {
+        fetchPolicy: 'store-or-network'
+      })
+      currentCursor.current = data.orders?.pageInfo?.startCursor
+    })
   };
 
-  const isLoading = isLoadingNext || isLoadingPrevious;
+  useEffect(() => {
+    setTransition(() => {
+      refetch({ count: Number(takeNumber), cursor: currentCursor.current }, {
+        fetchPolicy: 'store-or-network'
+      })
+    })
+  }, [takeNumber])
+
+  const hasNext = !!data.orders?.pageInfo.hasNextPage
+  const hasPrevious = !!data.orders?.pageInfo.hasPreviousPage
   const ordersList = useMemo(
-    () => data.orders?.edges || undefined,
-    [data.orders?.edges],
+    () => isPending ? [] : data.orders?.edges || undefined,
+    [data.orders?.edges, isPending],
   );
 
   const navigate = useNavigate();
@@ -87,13 +105,16 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
       color="primary"
       fullWidth
       aria-label="Table with orders data"
+      bottomContentPlacement="outside"
       classNames={{
-        base: "max-h-[520px] overflow-scroll",
-        table: "min-h-[420px]",
+        base: "flex flex-col flex-1 min-h-0",
+        wrapper: "flex-1 overflow-y-auto",
+        table: "h-full",
         td: "whitespace-nowrap overflow-hidden text-ellipsis max-w-60",
       }}
       bottomContent={
         <TablePagination
+          isLoading={isPending}
           hasNext={hasNext}
           hasPrevious={hasPrevious}
           loadNext={toNextPage}
@@ -107,7 +128,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
         })}
       </TableHeader>
       <TableBody
-        isLoading={isLoading}
+        isLoading={isPending}
         items={ordersList}
         loadingContent={<Spinner label="Loading..." />}
       >

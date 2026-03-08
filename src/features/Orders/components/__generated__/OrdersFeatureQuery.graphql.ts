@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bea2266cd064bc776d5d94b0ad40b218>>
+ * @generated SignedSource<<4858c940c7112c5962c8b03143dc73d7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -20,14 +20,7 @@ export type OrdersFeatureQuery = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "kind": "Literal",
-    "name": "first",
-    "value": 10
-  }
-],
-v1 = {
+var v0 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -58,7 +51,13 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v0/*: any*/),
+        "args": [
+          {
+            "kind": "Literal",
+            "name": "first",
+            "value": 10
+          }
+        ],
         "concreteType": "OrdersConnection",
         "kind": "LinkedField",
         "name": "orders",
@@ -80,7 +79,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v1/*: any*/),
+                  (v0/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -117,7 +116,7 @@ return {
                         "name": "phone",
                         "storageKey": null
                       },
-                      (v1/*: any*/)
+                      (v0/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -134,22 +133,8 @@ return {
                     "kind": "ScalarField",
                     "name": "orderDate",
                     "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "__typename",
-                    "storageKey": null
                   }
                 ],
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "cursor",
                 "storageKey": null
               }
             ],
@@ -167,6 +152,20 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
+                "name": "hasNextPage",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "hasPreviousPage",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
                 "name": "endCursor",
                 "storageKey": null
               },
@@ -174,7 +173,7 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "hasNextPage",
+                "name": "startCursor",
                 "storageKey": null
               }
             ],
@@ -182,25 +181,16 @@ return {
           }
         ],
         "storageKey": "orders(first:10)"
-      },
-      {
-        "alias": null,
-        "args": (v0/*: any*/),
-        "filters": null,
-        "handle": "connection",
-        "key": "OrdersTable_orders",
-        "kind": "LinkedHandle",
-        "name": "orders"
       }
     ]
   },
   "params": {
-    "cacheID": "6d75d04e2b36e06a9c064032d0c97025",
+    "cacheID": "d2849e3d99cfbea6e8bff3d4796e20c4",
     "id": null,
     "metadata": {},
     "name": "OrdersFeatureQuery",
     "operationKind": "query",
-    "text": "query OrdersFeatureQuery {\n  ...OrdersTable_query\n}\n\nfragment OrdersTable_query on Query {\n  orders(first: 10) {\n    edges {\n      node {\n        id\n        shipName\n        shipAddress\n        customer {\n          contactName\n          phone\n          id\n        }\n        shippedDate\n        orderDate\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query OrdersFeatureQuery {\n  ...OrdersTable_query\n}\n\nfragment OrdersTable_query on Query {\n  orders(first: 10) {\n    edges {\n      node {\n        id\n        shipName\n        shipAddress\n        customer {\n          contactName\n          phone\n          id\n        }\n        shippedDate\n        orderDate\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      endCursor\n      startCursor\n    }\n  }\n}\n"
   }
 };
 })();
