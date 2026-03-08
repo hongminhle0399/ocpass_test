@@ -17,7 +17,7 @@ export const TablePagination = ({
   isLoading
 }: TablePaginationProps) => {
   return (
-    <div className="flex w-full justify-end gap-2">
+    <div className="flex w-full justify-center gap-2 mb-2 md:mmb-0">
       <Button
         isDisabled={!hasPrevious || isLoading}
         size="sm"
