@@ -1,4 +1,4 @@
-export type CustomerModel = {
+export type CustomerColumn = {
   id: string | null;
   company: string | null;
   contactName: string | null;
@@ -7,10 +7,11 @@ export type CustomerModel = {
 };
 
 // FOR FILTER
-export type InputFilterField = Pick<
-  CustomerModel,
-  "id" | "company" | "contactName"
->;
+export type InputFilterField = {
+  id: string | null;
+  company: string | null;
+  contactName: string | null;
+}
 export type CustomerFilterModel = InputFilterField;
 export type CustomerFilterModelKey = keyof CustomerFilterModel;
 

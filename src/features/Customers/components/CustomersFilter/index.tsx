@@ -9,16 +9,16 @@ import {
   type SharedSelection,
 } from "@heroui/react";
 import { TAKE_OPTIONS } from "../../constants";
-import { useOrdersStore } from "../../store";
+import { useCustomersStore } from "../../store";
 import { FilterControls } from "./FilterControls";
 
 export const CustomersFilter = () => {
-  const setTakeNumber = useOrdersStore((state) => state.setTakeNumber);
-  const takeNumber = useOrdersStore((state) => state.takeNumber);
+  const setTakeNumber = useCustomersStore((state) => state.setTakeNumber);
+  const takeNumber = useCustomersStore((state) => state.takeNumber);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const onTakeChange = (keys: SharedSelection) => {
-    setTakeNumber(parseInt(keys.currentKey!));
+    setTakeNumber(keys.currentKey!);
   };
 
   return (

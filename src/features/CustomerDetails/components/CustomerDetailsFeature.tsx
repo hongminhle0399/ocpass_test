@@ -1,12 +1,12 @@
 import { graphql } from "relay-runtime";
 import { useLazyLoadQuery } from "react-relay";
-import type { CustomerDetailFeatureQuery as CustomerDetailFeatureQueryType } from "./__generated__/CustomerDetailFeatureQuery.graphql";
+import type { CustomerDetailsFeatureQuery as CustomerDetailsFeatureQueryType } from "./__generated__/CustomerDetailsFeatureQuery.graphql";
 import { CustomerProfileHero } from "./CustomerProfileHero";
 import { CustomerContactCard } from "./CustomerContactCard";
 import { CustomerOrdersTable } from "./CustomerOrdersTable";
 
-const customerDetailFeatureQuery = graphql`
-  query CustomerDetailFeatureQuery($id: ID!) {
+const customerDetailsFeatureQuery = graphql`
+  query CustomerDetailsFeatureQuery($id: ID!) {
     node(id: $id) {
       ... on Customer {
         ...CustomerProfileHero_customer
@@ -17,13 +17,13 @@ const customerDetailFeatureQuery = graphql`
   }
 `;
 
-interface CustomerDetailFeatureProps {
+interface CustomerDetailsFeatureProps {
     customerId: string;
 }
 
-export const CustomerDetailFeature = ({ customerId }: CustomerDetailFeatureProps) => {
-    const data = useLazyLoadQuery<CustomerDetailFeatureQueryType>(
-        customerDetailFeatureQuery,
+export const CustomerDetailsFeature = ({ customerId }: CustomerDetailsFeatureProps) => {
+    const data = useLazyLoadQuery<CustomerDetailsFeatureQueryType>(
+        customerDetailsFeatureQuery,
         { id: customerId },
     );
 
@@ -40,7 +40,7 @@ export const CustomerDetailFeature = ({ customerId }: CustomerDetailFeatureProps
     }
 
     return (
-        <div className="max-w-5xl mx-auto">
+        <div className="w-full mx-auto">
             <CustomerProfileHero customer={customer} />
 
             <div className="mb-6">

@@ -1,14 +1,12 @@
 import type {
   CustomerFilterControl,
   CustomerFilterModel,
-  CustomerModel
+  CustomerColumn
 } from "../types";
-
-export const DEFAULT_TAKE_NUMBER = 10;
 
 export const SCROLL_TABLE_TO_VIEW_DELAY = 500;
 
-export const ORDERS_FILTER_DEFAULT_STATE: CustomerFilterModel = {
+export const CUSTOMERS_FILTER_DEFAULT_STATE: CustomerFilterModel = {
   company: null,
   contactName: null,
   id: null,
@@ -32,12 +30,12 @@ export const FILTER_CATEGORIES: CustomerFilterControl = {
   },
 };
 
-export const ORDERS_COLUMNS: CustomerModel = {
+export const ORDERS_COLUMNS: CustomerColumn = {
   id: "ID",
   company: "Company",
   contactName: "Contact Name",
-  country: "Country",
   fax: "Fax",
+  country: "Country",
 };
 
-export const TAKE_OPTIONS: number[] = [10, 20, 40];
+export const TAKE_OPTIONS: string[] = [10, 20, 40].map(String);

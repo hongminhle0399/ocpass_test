@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f04851d4edaea40c35de765f4c9a9213>>
+ * @generated SignedSource<<311bae2584545af777209414435a3f56>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,9 +14,28 @@ export type CustomersTable_query$data = {
   readonly customers: {
     readonly edges: ReadonlyArray<{
       readonly node: {
-        readonly " $fragmentSpreads": FragmentRefs<"CustomersTableRow_customer">;
+        readonly city: string | null | undefined;
+        readonly companyName: string;
+        readonly contactName: string | null | undefined;
+        readonly country: string | null | undefined;
+        readonly fax: string | null | undefined;
+        readonly id: string;
+        readonly orders: ReadonlyArray<{
+          readonly freight: number | null | undefined;
+          readonly id: string;
+          readonly orderDate: any | null | undefined;
+          readonly shipper: {
+            readonly companyName: string;
+          } | null | undefined;
+        }>;
       };
     }> | null | undefined;
+    readonly pageInfo: {
+      readonly endCursor: string | null | undefined;
+      readonly hasNextPage: boolean;
+      readonly hasPreviousPage: boolean;
+      readonly startCursor: string | null | undefined;
+    };
   } | null | undefined;
   readonly " $fragmentType": "CustomersTable_query";
 };
@@ -28,9 +47,20 @@ export type CustomersTable_query$key = {
 import CustomersFeatureRefetchQuery_graphql from './CustomersFeatureRefetchQuery.graphql';
 
 const node: ReaderFragment = (function(){
-var v0 = [
-  "customers"
-];
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "companyName",
+  "storageKey": null
+};
 return {
   "argumentDefinitions": [
     {
@@ -46,23 +76,8 @@ return {
   ],
   "kind": "Fragment",
   "metadata": {
-    "connection": [
-      {
-        "count": "count",
-        "cursor": "cursor",
-        "direction": "forward",
-        "path": (v0/*: any*/)
-      }
-    ],
     "refetch": {
-      "connection": {
-        "forward": {
-          "count": "count",
-          "cursor": "cursor"
-        },
-        "backward": null,
-        "path": (v0/*: any*/)
-      },
+      "connection": null,
       "fragmentPathInResult": [],
       "operation": CustomersFeatureRefetchQuery_graphql
     }
@@ -70,11 +85,22 @@ return {
   "name": "CustomersTable_query",
   "selections": [
     {
-      "alias": "customers",
-      "args": null,
+      "alias": null,
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "after",
+          "variableName": "cursor"
+        },
+        {
+          "kind": "Variable",
+          "name": "first",
+          "variableName": "count"
+        }
+      ],
       "concreteType": "CustomersConnection",
       "kind": "LinkedField",
-      "name": "__CustomersTable_customers_connection",
+      "name": "customers",
       "plural": false,
       "selections": [
         {
@@ -93,26 +119,75 @@ return {
               "name": "node",
               "plural": false,
               "selections": [
+                (v0/*: any*/),
                 {
+                  "alias": null,
                   "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "CustomersTableRow_customer"
+                  "kind": "ScalarField",
+                  "name": "contactName",
+                  "storageKey": null
                 },
                 {
                   "alias": null,
                   "args": null,
                   "kind": "ScalarField",
-                  "name": "__typename",
+                  "name": "city",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "fax",
+                  "storageKey": null
+                },
+                (v1/*: any*/),
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "country",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "concreteType": "Order",
+                  "kind": "LinkedField",
+                  "name": "orders",
+                  "plural": true,
+                  "selections": [
+                    (v0/*: any*/),
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "orderDate",
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "concreteType": "Shipper",
+                      "kind": "LinkedField",
+                      "name": "shipper",
+                      "plural": false,
+                      "selections": [
+                        (v1/*: any*/)
+                      ],
+                      "storageKey": null
+                    },
+                    {
+                      "alias": null,
+                      "args": null,
+                      "kind": "ScalarField",
+                      "name": "freight",
+                      "storageKey": null
+                    }
+                  ],
                   "storageKey": null
                 }
               ],
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "cursor",
               "storageKey": null
             }
           ],
@@ -130,6 +205,20 @@ return {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
+              "name": "hasNextPage",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "hasPreviousPage",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
               "name": "endCursor",
               "storageKey": null
             },
@@ -137,7 +226,7 @@ return {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
-              "name": "hasNextPage",
+              "name": "startCursor",
               "storageKey": null
             }
           ],
@@ -152,6 +241,6 @@ return {
 };
 })();
 
-(node as any).hash = "82062d0d2a5f61919cadccea66d5ff5e";
+(node as any).hash = "af867dcfd51c95cc53cdda1978d620e9";
 
 export default node;

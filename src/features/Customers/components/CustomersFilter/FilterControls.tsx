@@ -1,15 +1,13 @@
 import { typedKeys } from "@/shared/types/utils";
-import { Button, DateRangePicker, Input } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
 import { useCallback, useMemo, type ChangeEvent } from "react";
 import { FILTER_CATEGORIES } from "../../constants";
-import { useOrdersStore } from "../../store";
+import { useCustomersStore } from "../../store";
 import type {
-  DateFilterField,
-  DatePickerValue,
+  CustomerFilterModelKey,
   FilterHanlderProvider,
   InputFilter,
   InputFilterField,
-  OrderFilterModelKey,
 } from "../../types";
 
 interface FilterControlsProps {
@@ -17,28 +15,22 @@ interface FilterControlsProps {
 }
 
 export function FilterControls({ onApplyFilter }: FilterControlsProps) {
-  const ordersFilter = useOrdersStore((state) => state.ordersFilter);
-  const updateOrdersFilter = useOrdersStore(
-    (state) => state.updateOrdersFilter,
+  const customersFilter = useCustomersStore((state) => state.customersFilter);
+  const updateCustomersFilter = useCustomersStore(
+    (state) => state.updateCustomersFilter,
   );
 
-  const provideFilterHandler = useCallback((orderKey: OrderFilterModelKey) => {
+  const provideFilterHandler = useCallback((orderKey: CustomerFilterModelKey) => {
     const callbacks: FilterHanlderProvider = {
-      customerId: (event: ChangeEvent<HTMLInputElement>) => {
-        updateOrdersFilter({ customerId: event?.target.value });
+      company: (event: ChangeEvent<HTMLInputElement>) => {
+        updateCustomersFilter({ company: event?.target.value });
       },
-      customerPhone: (event: ChangeEvent<HTMLInputElement>) => {
-        updateOrdersFilter({ customerPhone: event?.target.value });
+      contactName: (event: ChangeEvent<HTMLInputElement>) => {
+        updateCustomersFilter({ contactName: event?.target.value });
       },
-      orderDateRange: (value: DatePickerValue) => {
-        updateOrdersFilter({ orderDateRange: value });
-      },
-      shippedDateRange: (value: DatePickerValue) => {
-        updateOrdersFilter({ shippedDateRange: value });
-      },
-      shipAddress: (event: ChangeEvent<HTMLInputElement>) => {
-        updateOrdersFilter({ shipAddress: event?.target.value });
-      },
+      id: (event: ChangeEvent<HTMLInputElement>) => {
+        updateCustomersFilter({ id: event?.target.value });
+      }
     };
     return callbacks[orderKey];
   }, []);
@@ -52,7 +44,7 @@ export function FilterControls({ onApplyFilter }: FilterControlsProps) {
         className="max-w-full md:max-w-md"
         labelPlacement="outside-top"
         label={filterCategory.label}
-        value={ordersFilter[orderFilterKey] ?? ""}
+        value={customersFilter[orderFilterKey] ?? ""}
         onChange={controlHandler}
         placeholder={filterCategory.placeholder}
         defaultValue={filterCategory.defaultValue}
@@ -60,38 +52,18 @@ export function FilterControls({ onApplyFilter }: FilterControlsProps) {
     );
   };
 
-  const renderDateFilter = (orderFilterKey: keyof DateFilterField) => {
-    const filterCategory = FILTER_CATEGORIES[orderFilterKey];
-    const controlHandler = provideFilterHandler(orderFilterKey);
-    return (
-      <DateRangePicker
-        selectorButtonPlacement="start"
-        key={orderFilterKey}
-        onChange={controlHandler}
-        value={ordersFilter[orderFilterKey]}
-        defaultValue={null}
-        className="max-w-full md:max-w-md"
-        labelPlacement="outside-top"
-        label={filterCategory?.label}
-      />
-    );
-  };
-
-  const renderFilter = (filterKey: OrderFilterModelKey) => {
+  const renderFilter = (filterKey: CustomerFilterModelKey) => {
     if (!FILTER_CATEGORIES[filterKey]) return null;
     switch (filterKey) {
       // case "id":
-      case "customerId":
-      case "customerPhone":
+      case "contactName":
+      case "id":
       // case "customerContactName":
       // case "employeeName":
-      case "shipAddress":
+      case "company":
         // case "shipCountry":
         // case "shipName":
         return renderInputFilter(filterKey);
-      case "shippedDateRange":
-      case "orderDateRange":
-        return renderDateFilter(filterKey);
       default:
         return <div key={filterKey}>{filterKey}</div>;
     }
@@ -99,7 +71,7 @@ export function FilterControls({ onApplyFilter }: FilterControlsProps) {
 
   const filters = useMemo(() => {
     return typedKeys(FILTER_CATEGORIES).map(renderFilter);
-  }, [ordersFilter]);
+  }, [customersFilter]);
 
   const applyFilter = async () => {
     onApplyFilter()

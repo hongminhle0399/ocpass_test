@@ -12,6 +12,14 @@ const customersTableRowFragment = graphql`
     fax
     companyName
     country
+    orders {
+      id
+      orderDate
+      shipper {
+        companyName
+      }
+      freight
+    }
   }
 `;
 

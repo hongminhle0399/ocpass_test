@@ -1,12 +1,13 @@
-import { TablePagination } from "@/shared/ui";
-import { Spinner, Table, TableBody } from "@heroui/react";
-import { useMemo } from "react";
-import { graphql, usePaginationFragment } from "react-relay";
-import { useOrdersStore } from "../../store";
+import { typedKeys } from "@/shared/types/utils";
+import { Loading, TablePagination } from "@/shared/ui";
+import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
+import { useMemo, useRef, useTransition } from "react";
+import { graphql, useRefetchableFragment } from "react-relay";
+import { ORDERS_COLUMNS } from "../../constants";
+import { useCustomersStore } from "../../store";
 import { CustomersTableRow } from "./CustomersTableRow";
-import { OrdersTableHeader } from "./OrdersTableHeader";
 import type { CustomersTable_query$key } from "./__generated__/CustomersTable_query.graphql";
-import type { CustomersFeatureRefetchQuery as CustomersFeatureRefetchQueryType } from "./__generated__/CustomersFeatureRefetchQuery.graphql";
+import { useNavigate } from "react-router";
 
 const custmersTableFragment = graphql`
   fragment CustomersTable_query on Query
@@ -15,12 +16,30 @@ const custmersTableFragment = graphql`
     count: { type: "Int", defaultValue: 10 }
   )
   @refetchable(queryName: "CustomersFeatureRefetchQuery") {
-    customers(first: $count, after: $cursor)
-      @connection(key: "CustomersTable_customers") {
+    customers(first: $count, after: $cursor) {
       edges {
         node {
-          ...CustomersTableRow_customer
+          id
+          contactName
+          city
+          fax
+          companyName
+          country
+          orders {
+            id
+            orderDate
+            shipper {
+              companyName
+            }
+            freight
+          }
         }
+      }
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        endCursor
+        startCursor
       }
     }
   }
@@ -31,45 +50,50 @@ interface CustomersTableProps {
 }
 
 export const CustomersTable = ({ customers }: CustomersTableProps) => {
-  const {
-    data,
-    isLoadingNext,
-    isLoadingPrevious,
-    hasNext,
-    hasPrevious,
-    loadNext,
-    loadPrevious,
-  } = usePaginationFragment<
-    CustomersFeatureRefetchQueryType,
-    CustomersTable_query$key
-  >(custmersTableFragment, customers);
+  const [data, refetch] = useRefetchableFragment(custmersTableFragment, customers);
+  const [isPending, setTransition] = useTransition()
+  const currentCursor = useRef<string | null | undefined>(undefined)
 
-  const takeNumber = useOrdersStore((state) => state.takeNumber);
+  const navigate = useNavigate();
+  const takeNumber = useCustomersStore((state) => state.takeNumber);
 
   const toNextPage = () => {
-    loadNext(takeNumber);
+    setTransition(() => {
+      refetch({ cursor: data?.customers?.pageInfo?.endCursor, count: Number(takeNumber) })
+    })
+    currentCursor.current = data?.customers?.pageInfo?.endCursor
   };
 
   const toPreviousPage = () => {
-    loadPrevious(takeNumber);
+    setTransition(() => {
+      refetch({ cursor: data?.customers?.pageInfo?.startCursor, count: Number(takeNumber) })
+    })
+    currentCursor.current = data?.customers?.pageInfo?.startCursor
   };
 
-  const isLoading = isLoadingNext || isLoadingPrevious;
-  const ordersList = useMemo(() => data.customers?.edges || [], [data.customers]);
+  const handleRowClick = (id: string) => () => {
+    navigate(`/customers/${id}`);
+  };
+
+  const hasNext = !!data?.customers?.pageInfo?.hasNextPage
+  const hasPrevious = !!data?.customers?.pageInfo?.hasPreviousPage
+  const customersList = useMemo(() => isPending ? [] : data.customers?.edges || [], [data.customers?.edges, isPending]);
   return (
     <Table
       isHeaderSticky
       color="primary"
       fullWidth
-      selectionMode="single"
       aria-label="Table with orders data"
+      bottomContentPlacement="outside"
       classNames={{
-        base: "max-h-[520px] overflow-scroll",
-        table: "min-h-[420px]",
+        base: "flex-1 overflow-scroll",
+        table: "h-full",
+        wrapper: "flex-1",
         td: "whitespace-nowrap overflow-hidden text-ellipsis max-w-60",
       }}
       bottomContent={
         <TablePagination
+          isLoading={isPending}
           hasNext={hasNext}
           hasPrevious={hasPrevious}
           loadNext={toNextPage}
@@ -77,14 +101,29 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
         />
       }
     >
-      <OrdersTableHeader />
+      <TableHeader>
+        {typedKeys(ORDERS_COLUMNS).map((key) => {
+          return <TableColumn key={key}>{ORDERS_COLUMNS[key]}</TableColumn>;
+        })}
+      </TableHeader>
       <TableBody
-        isLoading={isLoading}
-        items={ordersList}
-        loadingContent={<Spinner label="Loading..." />}
+        isLoading={isPending}
+        items={customersList}
+        loadingContent={<Loading label="Loading..." />}
       >
         {(item) => {
-          return <CustomersTableRow customer={item.node} />;
+          const node = item.node
+          return <TableRow key={node.id} onClick={handleRowClick(node.id)}>
+            <TableCell>
+              <div className="font-semibold text-blue-500">
+                <p>{node.id}</p>
+              </div>
+            </TableCell>
+            <TableCell>{node.contactName}</TableCell>
+            <TableCell>{node.companyName}</TableCell>
+            <TableCell>{node.fax}</TableCell>
+            <TableCell>{node.country}</TableCell>
+          </TableRow>
         }}
       </TableBody>
     </Table>

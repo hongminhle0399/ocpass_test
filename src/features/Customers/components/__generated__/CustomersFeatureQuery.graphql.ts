@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b1b5ca88399a6b8d6ec02fca8b4bdba3>>
+ * @generated SignedSource<<1997201700a16eb60d396fee96396e52>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -20,13 +20,20 @@ export type CustomersFeatureQuery = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "kind": "Literal",
-    "name": "first",
-    "value": 10
-  }
-];
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+},
+v1 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "companyName",
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": [],
@@ -51,7 +58,13 @@ return {
     "selections": [
       {
         "alias": null,
-        "args": (v0/*: any*/),
+        "args": [
+          {
+            "kind": "Literal",
+            "name": "first",
+            "value": 10
+          }
+        ],
         "concreteType": "CustomersConnection",
         "kind": "LinkedField",
         "name": "customers",
@@ -73,13 +86,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "id",
-                    "storageKey": null
-                  },
+                  (v0/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -101,13 +108,7 @@ return {
                     "name": "fax",
                     "storageKey": null
                   },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "companyName",
-                    "storageKey": null
-                  },
+                  (v1/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -118,18 +119,43 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "kind": "ScalarField",
-                    "name": "__typename",
+                    "concreteType": "Order",
+                    "kind": "LinkedField",
+                    "name": "orders",
+                    "plural": true,
+                    "selections": [
+                      (v0/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "orderDate",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": "Shipper",
+                        "kind": "LinkedField",
+                        "name": "shipper",
+                        "plural": false,
+                        "selections": [
+                          (v1/*: any*/),
+                          (v0/*: any*/)
+                        ],
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "freight",
+                        "storageKey": null
+                      }
+                    ],
                     "storageKey": null
                   }
                 ],
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "cursor",
                 "storageKey": null
               }
             ],
@@ -147,6 +173,20 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
+                "name": "hasNextPage",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "hasPreviousPage",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
                 "name": "endCursor",
                 "storageKey": null
               },
@@ -154,7 +194,7 @@ return {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "hasNextPage",
+                "name": "startCursor",
                 "storageKey": null
               }
             ],
@@ -162,25 +202,16 @@ return {
           }
         ],
         "storageKey": "customers(first:10)"
-      },
-      {
-        "alias": null,
-        "args": (v0/*: any*/),
-        "filters": null,
-        "handle": "connection",
-        "key": "CustomersTable_customers",
-        "kind": "LinkedHandle",
-        "name": "customers"
       }
     ]
   },
   "params": {
-    "cacheID": "c388472dfa7bfcc3bd6a436c138d64bb",
+    "cacheID": "50fbeb7a58a39e848df5e1d3cb0fdf80",
     "id": null,
     "metadata": {},
     "name": "CustomersFeatureQuery",
     "operationKind": "query",
-    "text": "query CustomersFeatureQuery {\n  ...CustomersTable_query\n}\n\nfragment CustomersTableRow_customer on Customer {\n  id\n  contactName\n  city\n  fax\n  companyName\n  country\n}\n\nfragment CustomersTable_query on Query {\n  customers(first: 10) {\n    edges {\n      node {\n        ...CustomersTableRow_customer\n        id\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query CustomersFeatureQuery {\n  ...CustomersTable_query\n}\n\nfragment CustomersTable_query on Query {\n  customers(first: 10) {\n    edges {\n      node {\n        id\n        contactName\n        city\n        fax\n        companyName\n        country\n        orders {\n          id\n          orderDate\n          shipper {\n            companyName\n            id\n          }\n          freight\n        }\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      endCursor\n      startCursor\n    }\n  }\n}\n"
   }
 };
 })();
