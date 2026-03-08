@@ -110,6 +110,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
         base: "flex flex-col flex-1 min-h-0",
         wrapper: "flex-1 overflow-y-auto",
         table: "h-full",
+        tr: "hover:bg-default-100 transition-colors",
         td: "whitespace-nowrap overflow-hidden text-ellipsis max-w-60",
       }}
       bottomContent={

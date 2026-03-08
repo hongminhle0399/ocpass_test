@@ -69,7 +69,7 @@ export const OrderDetailsFeature = ({ queryRef }: OrderDetailsFeatureProps) => {
     }
 
     return (
-        <div className="max-w-5xl mx-auto">
+        <div className="w-full mx-auto">
             <OrderDetailHero order={order} />
 
             <div className="grid grid-cols-1 gap-4 mb-4">

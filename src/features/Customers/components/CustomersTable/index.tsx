@@ -89,6 +89,7 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
         base: "flex-1 overflow-scroll",
         table: "h-full",
         wrapper: "flex-1",
+        tr: "hover:bg-default-100 transition-colors",
         td: "whitespace-nowrap overflow-hidden text-ellipsis max-w-60",
       }}
       bottomContent={
