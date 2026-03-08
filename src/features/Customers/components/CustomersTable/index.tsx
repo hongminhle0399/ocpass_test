@@ -1,12 +1,13 @@
 import { typedKeys } from "@/shared/types/utils";
 import { Loading, TablePagination } from "@/shared/ui";
 import { Avatar, Chip, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
-import { useMemo, useRef, useTransition } from "react";
-import { graphql, useRefetchableFragment } from "react-relay";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { graphql, useRefetchableFragment, useRelayEnvironment } from "react-relay";
 import { ORDERS_COLUMNS } from "../../constants";
 import { useCustomersStore } from "../../store";
 import type { CustomersTable_query$key } from "./__generated__/CustomersTable_query.graphql";
 import { useNavigate } from "react-router";
+import { customerPrefetchRegistry } from "@/features/CustomerDetails/components/CustomerDetailsFeature";
 
 const custmersTableFragment = graphql`
   fragment CustomersTable_query on Query
@@ -50,39 +51,61 @@ interface CustomersTableProps {
 
 export const CustomersTable = ({ customers }: CustomersTableProps) => {
   const [data, refetch] = useRefetchableFragment(custmersTableFragment, customers);
-  const [isPending, setTransition] = useTransition()
-  const currentCursor = useRef<string | null | undefined>(undefined)
+  const [isPending, setTransition] = useTransition();
+  const currentCursor = useRef<string | null | undefined>(undefined);
 
   const navigate = useNavigate();
   const takeNumber = useCustomersStore((state) => state.takeNumber);
+  const environment = useRelayEnvironment();
+  const [activeHoverId, setActiveHoverId] = useState<string | null>(null);
+  const timeoutId = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const toNextPage = () => {
     setTransition(() => {
-      refetch({ cursor: data?.customers?.pageInfo?.endCursor, count: Number(takeNumber) })
-    })
-    currentCursor.current = data?.customers?.pageInfo?.endCursor
+      refetch({ cursor: data?.customers?.pageInfo?.endCursor, count: Number(takeNumber) });
+    });
+    currentCursor.current = data?.customers?.pageInfo?.endCursor;
   };
 
   const toPreviousPage = () => {
     setTransition(() => {
-      refetch({ cursor: data?.customers?.pageInfo?.startCursor, count: Number(takeNumber) })
-    })
-    currentCursor.current = data?.customers?.pageInfo?.startCursor
+      refetch({ cursor: data?.customers?.pageInfo?.startCursor, count: Number(takeNumber) });
+    });
+    currentCursor.current = data?.customers?.pageInfo?.startCursor;
+  };
+
+  useEffect(() => {
+    setTransition(() => {
+      refetch({ count: Number(takeNumber), cursor: currentCursor.current }, {
+        fetchPolicy: 'store-or-network'
+      });
+    });
+  }, [takeNumber, refetch]);
+
+  const handleMouseEnter = (id: string) => () => {
+    if (id !== activeHoverId) {
+      clearTimeout(timeoutId.current);
+    }
+    timeoutId.current = setTimeout(() => {
+      customerPrefetchRegistry.getOrLoad(environment, id);
+    }, 150);
+    setActiveHoverId(id);
   };
 
   const handleRowClick = (id: string) => () => {
     navigate(`/customers/${id}`);
   };
 
-  const hasNext = !!data?.customers?.pageInfo?.hasNextPage
-  const hasPrevious = !!data?.customers?.pageInfo?.hasPreviousPage
-  const customersList = useMemo(() => isPending ? [] : data.customers?.edges || [], [data.customers?.edges, isPending]);
+  const hasNext = !!data?.customers?.pageInfo?.hasNextPage;
+  const hasPrevious = !!data?.customers?.pageInfo?.hasPreviousPage;
+  const customersList = useMemo(() => (isPending ? [] : data.customers?.edges || []), [data.customers?.edges, isPending]);
+
   return (
     <Table
       isHeaderSticky
       color="primary"
       fullWidth
-      aria-label="Table with orders data"
+      aria-label="Table with customers data"
       bottomContentPlacement="outside"
       classNames={{
         base: "flex-1 overflow-scroll",
@@ -112,9 +135,15 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
         loadingContent={<Loading label="Loading..." />}
       >
         {(item) => {
-          const node = item.node
+          const node = item.node;
           return (
-            <TableRow key={node.id} onClick={handleRowClick(node.id)} className="cursor-pointer">
+            <TableRow
+              key={node.id}
+              onClick={handleRowClick(node.id)}
+              onMouseEnter={handleMouseEnter(node.id)}
+              onPointerDown={handleMouseEnter(node.id)}
+              className="cursor-pointer"
+            >
               <TableCell>
                 <Chip size="sm" variant="flat" color="default" className="font-mono">
                   {node.id}

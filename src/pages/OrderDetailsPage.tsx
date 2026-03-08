@@ -1,8 +1,8 @@
 import { useParams } from "react-router";
 import { OrderDetailsFeature } from "@/features/OrderDetails/components";
-import { Suspense, useMemo } from "react";
+import { Suspense, useMemo, useEffect } from "react";
 import { useRelayEnvironment } from "react-relay";
-import { getOrLoadOrderDetailsQuery } from "@/features/OrderDetails/components/OrderDetailsFeature";
+import { orderPrefetchRegistry } from "@/features/OrderDetails/components/OrderDetailsFeature";
 import { Loading } from "@/shared/ui";
 
 export const OrderDetailsPage = () => {
@@ -11,7 +11,7 @@ export const OrderDetailsPage = () => {
 
     const queryRef = useMemo(() => {
         if (!id) return null;
-        return getOrLoadOrderDetailsQuery(environment, id);
+        return orderPrefetchRegistry.getOrLoad(environment, id);
     }, [id, environment]);
 
     if (!queryRef) {

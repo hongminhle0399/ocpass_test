@@ -1,8 +1,8 @@
-import { getOrLoadOrderDetailsQuery } from "@/features/OrderDetails/components/OrderDetailsFeature";
+import { orderPrefetchRegistry } from "@/features/OrderDetails/components/OrderDetailsFeature";
 import { typedKeys } from "@/shared/types/utils";
 import { TablePagination } from "@/shared/ui";
 import { Avatar, Chip, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
-import { useEffect, useMemo, useRef, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { graphql, useRefetchableFragment, useRelayEnvironment } from "react-relay";
 import { useNavigate } from "react-router";
 import { ORDERS_COLUMNS } from "../../constants";
@@ -52,12 +52,11 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
 
   const takeNumber = useOrdersStore((state) => state.takeNumber);
   const environment = useRelayEnvironment();
+  const [activeHoverId, setActiveHoverId] = useState<string | null>(null)
+  const timeoutId = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   const [isPending, setTransition] = useTransition()
   const currentCursor = useRef<string | undefined | null>(undefined)
-
-  useEffect(() => {
-  }, [data.orders?.pageInfo])
 
   const toNextPage = () => {
     setTransition(() => {
@@ -95,7 +94,13 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
   const navigate = useNavigate();
 
   const handleMouseEnter = (id: string) => () => {
-    getOrLoadOrderDetailsQuery(environment, id);
+    if (id !== activeHoverId) {
+      clearTimeout(timeoutId.current)
+    }
+    timeoutId.current = setTimeout(() => {
+      orderPrefetchRegistry.getOrLoad(environment, id);
+    }, 150)
+    setActiveHoverId(id)
   };
 
   const handleRowClick = (id: string) => () => {

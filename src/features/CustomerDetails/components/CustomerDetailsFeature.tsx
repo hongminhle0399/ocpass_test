@@ -1,11 +1,12 @@
-import { graphql } from "relay-runtime";
-import { useLazyLoadQuery } from "react-relay";
-import type { CustomerDetailsFeatureQuery as CustomerDetailsFeatureQueryType } from "./__generated__/CustomerDetailsFeatureQuery.graphql";
+import { graphql, usePreloadedQuery } from "react-relay";
+import type { PreloadedQuery } from "react-relay";
 import { CustomerProfileHero } from "./CustomerProfileHero";
 import { CustomerContactCard } from "./CustomerContactCard";
 import { CustomerOrdersTable } from "./CustomerOrdersTable";
+import type { CustomerDetailsFeatureQuery as CustomerDetailsFeatureQueryType } from "./__generated__/CustomerDetailsFeatureQuery.graphql";
+import { PrefetchRegistry } from "@/shared/lib/PrefetchRegistry";
 
-const customerDetailsFeatureQuery = graphql`
+export const customerDetailsFeatureQuery = graphql`
   query CustomerDetailsFeatureQuery($id: ID!) {
     node(id: $id) {
       ... on Customer {
@@ -17,15 +18,16 @@ const customerDetailsFeatureQuery = graphql`
   }
 `;
 
+export const customerPrefetchRegistry = new PrefetchRegistry<CustomerDetailsFeatureQueryType>(
+    customerDetailsFeatureQuery
+);
+
 interface CustomerDetailsFeatureProps {
-    customerId: string;
+    queryRef: PreloadedQuery<CustomerDetailsFeatureQueryType>;
 }
 
-export const CustomerDetailsFeature = ({ customerId }: CustomerDetailsFeatureProps) => {
-    const data = useLazyLoadQuery<CustomerDetailsFeatureQueryType>(
-        customerDetailsFeatureQuery,
-        { id: customerId },
-    );
+export const CustomerDetailsFeature = ({ queryRef }: CustomerDetailsFeatureProps) => {
+    const data = usePreloadedQuery(customerDetailsFeatureQuery, queryRef);
 
     const customer = data.node;
 
@@ -34,7 +36,6 @@ export const CustomerDetailsFeature = ({ customerId }: CustomerDetailsFeaturePro
             <div className="flex flex-col items-center justify-center py-24 text-gray-400 dark:text-gray-500 gap-3">
                 <p className="text-5xl">🏢</p>
                 <p className="text-lg font-medium">Customer not found</p>
-                <p className="text-sm">No customer with ID: {customerId}</p>
             </div>
         );
     }
