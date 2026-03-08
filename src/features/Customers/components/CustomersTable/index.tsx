@@ -1,11 +1,10 @@
 import { typedKeys } from "@/shared/types/utils";
 import { Loading, TablePagination } from "@/shared/ui";
-import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
+import { Avatar, Chip, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
 import { useMemo, useRef, useTransition } from "react";
 import { graphql, useRefetchableFragment } from "react-relay";
 import { ORDERS_COLUMNS } from "../../constants";
 import { useCustomersStore } from "../../store";
-import { CustomersTableRow } from "./CustomersTableRow";
 import type { CustomersTable_query$key } from "./__generated__/CustomersTable_query.graphql";
 import { useNavigate } from "react-router";
 
@@ -114,17 +113,49 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
       >
         {(item) => {
           const node = item.node
-          return <TableRow key={node.id} onClick={handleRowClick(node.id)}>
-            <TableCell>
-              <div className="font-semibold text-blue-500">
-                <p>{node.id}</p>
-              </div>
-            </TableCell>
-            <TableCell>{node.contactName}</TableCell>
-            <TableCell>{node.companyName}</TableCell>
-            <TableCell>{node.fax}</TableCell>
-            <TableCell>{node.country}</TableCell>
-          </TableRow>
+          return (
+            <TableRow key={node.id} onClick={handleRowClick(node.id)} className="cursor-pointer">
+              <TableCell>
+                <Chip size="sm" variant="flat" color="default" className="font-mono">
+                  {node.id}
+                </Chip>
+              </TableCell>
+              <TableCell>
+                <div className="flex gap-x-2 items-center">
+                  <Avatar
+                    name={node.contactName || ""}
+                    size="sm"
+                    isBordered
+                    color="primary"
+                    className="w-8 h-8 text-tiny"
+                  />
+                  <span className="font-medium text-gray-700 dark:text-gray-200">
+                    {node.contactName}
+                  </span>
+                </div>
+              </TableCell>
+              <TableCell>
+                <span className="font-bold text-blue-600 dark:text-blue-400">
+                  {node.companyName}
+                </span>
+              </TableCell>
+              <TableCell>
+                <span className="text-gray-500 text-sm italic">
+                  {node.fax || "N/A"}
+                </span>
+              </TableCell>
+              <TableCell>
+                <Chip size="sm" variant="dot" color="success">
+                  {node.country}
+                </Chip>
+              </TableCell>
+              <TableCell>
+                <Chip size="sm" variant="solid" color="secondary" className="font-bold">
+                  {node.orders?.length || 0}
+                </Chip>
+              </TableCell>
+            </TableRow>
+          );
         }}
       </TableBody>
     </Table>

@@ -1,8 +1,8 @@
 import { getOrLoadOrderDetailsQuery } from "@/features/OrderDetails/components/OrderDetailsFeature";
 import { typedKeys } from "@/shared/types/utils";
 import { TablePagination } from "@/shared/ui";
-import { Avatar, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
-import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { Avatar, Chip, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
+import { useEffect, useMemo, useRef, useTransition } from "react";
 import { graphql, useRefetchableFragment, useRelayEnvironment } from "react-relay";
 import { useNavigate } from "react-router";
 import { ORDERS_COLUMNS } from "../../constants";
@@ -28,6 +28,9 @@ const ordersTableFragment = graphql`
           }
           shippedDate
           orderDate
+          shipVia
+          shipRegion
+          shipCountry
         }
       }
       pageInfo {
@@ -111,7 +114,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
         wrapper: "flex-1 overflow-y-auto",
         table: "h-full",
         tr: "hover:bg-default-100 transition-colors",
-        td: "whitespace-nowrap overflow-hidden text-ellipsis max-w-60",
+        td: "whitespace-nowrap overflow-hidden text-ellipsis max-w-60 py-3",
       }}
       bottomContent={
         <TablePagination
@@ -144,26 +147,58 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
               className="cursor-pointer"
             >
               <TableCell>
-                <p>{node.id}</p>
+                <Chip size="sm" variant="flat" color="primary" className="font-mono font-bold">
+                  #{node.id}
+                </Chip>
               </TableCell>
-              <TableCell>{node.orderDate}</TableCell>
               <TableCell>
-                <div className="flex gap-x-2">
-                  <Avatar name={node.customer?.contactName || ""} />
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  {node.orderDate}
+                </span>
+              </TableCell>
+              <TableCell>
+                <div className="flex gap-x-2 items-center">
+                  <Avatar
+                    name={node.customer?.contactName || ""}
+                    size="sm"
+                    isBordered
+                    className="w-8 h-8 text-tiny"
+                  />
                   <div className="flex flex-col">
-                    <p className="text-md whitespace-nowrap overflow-hidden text-ellipsis">
-                      <span className="font-bold">
-                        {node.customer?.contactName || ""}
-                      </span>
+                    <p className="text-sm font-bold text-gray-800 dark:text-gray-200">
+                      {node.customer?.contactName || "Unknown"}
                     </p>
-                    <p className="whitespace-nowrap overflow-hidden text-ellipsis text-gray-500">
+                    <p className="text-xs text-gray-500">
                       {node.customer?.phone}
                     </p>
                   </div>
                 </div>
               </TableCell>
-              <TableCell>{node.shipName}</TableCell>
-              <TableCell>{node.shipAddress}</TableCell>
+              <TableCell>
+                <Chip size="sm" variant="flat" color="warning" className="font-semibold">
+                  Carrier #{node.shipVia}
+                </Chip>
+              </TableCell>
+              <TableCell>
+                <span className="text-sm italic text-gray-400">
+                  {node.shipRegion || "—"}
+                </span>
+              </TableCell>
+              <TableCell>
+                <Chip size="sm" variant="dot" color="primary" className="border-none font-medium">
+                  {node.shipCountry}
+                </Chip>
+              </TableCell>
+              <TableCell>
+                <span className="text-sm font-semibold truncate block max-w-[200px]">
+                  {node.shipName}
+                </span>
+              </TableCell>
+              <TableCell>
+                <span className="text-xs text-gray-500 truncate block max-w-[250px]">
+                  {node.shipAddress}
+                </span>
+              </TableCell>
             </TableRow>
           );
         }}

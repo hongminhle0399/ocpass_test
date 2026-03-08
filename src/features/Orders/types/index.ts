@@ -3,10 +3,13 @@ import type { DateValue } from "@internationalized/date";
 
 export type OrderColumn = {
   id: string | null;
-  shipName: string | null;
-  shipAddress: string | null;
   orderDate: string | null;
   customer: string | null;
+  shipVia: string | null;
+  shipRegion: string | null;
+  shipCountry: string | null;
+  shipName: string | null;
+  shipAddress: string | null;
 };
 
 // FOR FILTER

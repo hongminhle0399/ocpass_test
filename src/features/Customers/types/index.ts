@@ -4,6 +4,7 @@ export type CustomerColumn = {
   contactName: string | null;
   fax: string | null;
   country: string | null;
+  totalOrders: string | null;
 };
 
 // FOR FILTER

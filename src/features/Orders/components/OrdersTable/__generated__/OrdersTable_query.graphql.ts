@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<aa0cf4024924e49415048c9dad7f5c6c>>
+ * @generated SignedSource<<2bb825c0572f25c1933ea9d29ab50a69>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,7 +21,10 @@ export type OrdersTable_query$data = {
         readonly id: string;
         readonly orderDate: any | null | undefined;
         readonly shipAddress: string | null | undefined;
+        readonly shipCountry: string | null | undefined;
         readonly shipName: string | null | undefined;
+        readonly shipRegion: string | null | undefined;
+        readonly shipVia: any | null | undefined;
         readonly shippedDate: any | null | undefined;
       };
     }> | null | undefined;
@@ -158,6 +161,27 @@ const node: ReaderFragment = {
                   "kind": "ScalarField",
                   "name": "orderDate",
                   "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "shipVia",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "shipRegion",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
+                  "name": "shipCountry",
+                  "storageKey": null
                 }
               ],
               "storageKey": null
@@ -212,6 +236,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "e4270c7664d78dfe52212020ca8e20b4";
+(node as any).hash = "14604f5e863dd872e1031bbdf30b4f77";
 
 export default node;

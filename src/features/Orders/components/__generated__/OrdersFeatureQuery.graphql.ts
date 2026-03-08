@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4858c940c7112c5962c8b03143dc73d7>>
+ * @generated SignedSource<<3e5363fa23bacd62b570fe5f302d152a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -133,6 +133,27 @@ return {
                     "kind": "ScalarField",
                     "name": "orderDate",
                     "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "shipVia",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "shipRegion",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "shipCountry",
+                    "storageKey": null
                   }
                 ],
                 "storageKey": null
@@ -185,12 +206,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d2849e3d99cfbea6e8bff3d4796e20c4",
+    "cacheID": "9b7f665d4f2e9ab6f2f4769c5b5ab1ad",
     "id": null,
     "metadata": {},
     "name": "OrdersFeatureQuery",
     "operationKind": "query",
-    "text": "query OrdersFeatureQuery {\n  ...OrdersTable_query\n}\n\nfragment OrdersTable_query on Query {\n  orders(first: 10) {\n    edges {\n      node {\n        id\n        shipName\n        shipAddress\n        customer {\n          contactName\n          phone\n          id\n        }\n        shippedDate\n        orderDate\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      endCursor\n      startCursor\n    }\n  }\n}\n"
+    "text": "query OrdersFeatureQuery {\n  ...OrdersTable_query\n}\n\nfragment OrdersTable_query on Query {\n  orders(first: 10) {\n    edges {\n      node {\n        id\n        shipName\n        shipAddress\n        customer {\n          contactName\n          phone\n          id\n        }\n        shippedDate\n        orderDate\n        shipVia\n        shipRegion\n        shipCountry\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      endCursor\n      startCursor\n    }\n  }\n}\n"
   }
 };
 })();

@@ -34,6 +34,9 @@ export const ORDERS_COLUMNS: OrderColumn = {
   id: "ID",
   orderDate: "Order Date",
   customer: "Customer",
+  shipVia: "Ship Via",
+  shipRegion: "Region",
+  shipCountry: "Country",
   shipName: "Ship Name",
   shipAddress: "Ship Address",
 };

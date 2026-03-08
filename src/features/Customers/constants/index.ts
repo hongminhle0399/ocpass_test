@@ -36,6 +36,7 @@ export const ORDERS_COLUMNS: CustomerColumn = {
   contactName: "Contact Name",
   fax: "Fax",
   country: "Country",
+  totalOrders: "Orders",
 };
 
 export const TAKE_OPTIONS: string[] = [10, 20, 40].map(String);

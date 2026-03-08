@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<120ff7a59cc1ba4562c92826677eac6c>>
+ * @generated SignedSource<<550f3abc1bd520a32bb2f1309f64bd35>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -164,6 +164,27 @@ return {
                     "kind": "ScalarField",
                     "name": "orderDate",
                     "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "shipVia",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "shipRegion",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "shipCountry",
+                    "storageKey": null
                   }
                 ],
                 "storageKey": null
@@ -216,16 +237,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "31f4e23c1bcc6d9e74eab3acb8dd9b46",
+    "cacheID": "40e2d3a08ec58f99a39efcf76b5432d6",
     "id": null,
     "metadata": {},
     "name": "OrdersFeatureRefetchQuery",
     "operationKind": "query",
-    "text": "query OrdersFeatureRefetchQuery(\n  $count: Int = 10\n  $cursor: String\n) {\n  ...OrdersTable_query_1G22uz\n}\n\nfragment OrdersTable_query_1G22uz on Query {\n  orders(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        shipName\n        shipAddress\n        customer {\n          contactName\n          phone\n          id\n        }\n        shippedDate\n        orderDate\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      endCursor\n      startCursor\n    }\n  }\n}\n"
+    "text": "query OrdersFeatureRefetchQuery(\n  $count: Int = 10\n  $cursor: String\n) {\n  ...OrdersTable_query_1G22uz\n}\n\nfragment OrdersTable_query_1G22uz on Query {\n  orders(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        shipName\n        shipAddress\n        customer {\n          contactName\n          phone\n          id\n        }\n        shippedDate\n        orderDate\n        shipVia\n        shipRegion\n        shipCountry\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      endCursor\n      startCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "e4270c7664d78dfe52212020ca8e20b4";
+(node as any).hash = "14604f5e863dd872e1031bbdf30b4f77";
 
 export default node;
