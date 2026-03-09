@@ -8,6 +8,7 @@ interface OrdersState {
   takeNumber: string;
   updateOrdersFilter: (order: Partial<OrderFilterModel>) => void;
   setTakeNumber: (takeNumber: string) => void;
+  resetOrdersFilter: () => void;
 }
 
 export const useOrdersStore = create<OrdersState>()(
@@ -22,5 +23,6 @@ export const useOrdersStore = create<OrdersState>()(
       );
     },
     setTakeNumber: (take: string) => set((state) => { state.takeNumber = take }),
+    resetOrdersFilter: () => set((state) => { state.ordersFilter = ORDERS_FILTER_DEFAULT_STATE }),
   })),
 );

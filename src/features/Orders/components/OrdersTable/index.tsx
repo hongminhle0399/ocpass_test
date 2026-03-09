@@ -1,6 +1,6 @@
 import { orderPrefetchRegistry } from "@/features/OrderDetails/components/OrderDetailsFeature";
 import { typedKeys } from "@/shared/types/utils";
-import { TablePagination } from "@/shared/ui";
+import { TableEmptyContent, TablePagination } from "@/shared/ui";
 import { Avatar, Chip, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, type SortDescriptor } from "@heroui/react";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { graphql, useRefetchableFragment, useRelayEnvironment } from "react-relay";
@@ -15,9 +15,14 @@ const ordersTableFragment = graphql`
     cursor: { type: "String" }
     count: { type: "Int", defaultValue: 10 }
     order: { type: "[OrderSortInput!]" }
+    customerPhone: { type: "String" }
+    orderDateFrom: { type: "LocalDate" }
+    orderDateTo: { type: "LocalDate" }
+    shippedDateFrom: { type: "LocalDate" }
+    shippedDateTo: { type: "LocalDate" }
   )
   @refetchable(queryName: "OrdersFeatureRefetchQuery") {
-    orders(first: $count, after: $cursor, order: $order) {
+    orders(first: $count, after: $cursor, order: $order, where: { and: [ { customer: { phone: { contains: $customerPhone } }, shippedDate: { lte: $shippedDateTo gte: $shippedDateFrom }, orderDate: { lte: $orderDateTo, gte: $orderDateFrom } } ]}) {
       edges {
         node {
           id
@@ -55,6 +60,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
   const environment = useRelayEnvironment();
   const [activeHoverId, setActiveHoverId] = useState<string | null>(null)
   const timeoutId = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const ordersFilter = useOrdersStore((state) => state.ordersFilter);
 
   const [isPending, setTransition] = useTransition()
   const currentCursor = useRef<string | undefined | null>(undefined)
@@ -64,7 +70,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
     direction: "descending",
   });
 
-  const relayOrder = useMemo(() => {
+  const sortOrder = useMemo(() => {
     if (!sortDescriptor.column || !sortDescriptor.direction) return null;
     const direction = sortDescriptor.direction === "ascending" ? "ASC" : "DESC";
 
@@ -81,43 +87,39 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
     }
   }, [sortDescriptor]);
 
+  const getRefetchParams = () => {
+    return {
+      count: Number(takeNumber),
+      cursor: currentCursor.current,
+      order: sortOrder,
+      customerPhone: ordersFilter.customerPhone || '',
+      shippedDateFrom: ordersFilter.shippedDateRange?.start.toString(),
+      shippedDateTo: ordersFilter.shippedDateRange?.end.toString(),
+      orderDateFrom: ordersFilter.orderDateRange?.start.toString(),
+      orderDateTo: ordersFilter.orderDateRange?.end.toString(),
+    }
+  }
+
   const toNextPage = () => {
+    currentCursor.current = data.orders?.pageInfo?.endCursor
     setTransition(() => {
-      refetch({
-        count: Number(takeNumber),
-        cursor: data?.orders?.pageInfo?.endCursor,
-        order: relayOrder
-      }, {
-        fetchPolicy: 'store-or-network'
-      })
-      currentCursor.current = data.orders?.pageInfo?.endCursor
+      refetch(getRefetchParams())
     })
   };
 
   const toPreviousPage = () => {
+    currentCursor.current = data.orders?.pageInfo?.startCursor
     setTransition(() => {
-      refetch({
-        count: Number(takeNumber),
-        cursor: data?.orders?.pageInfo?.startCursor,
-        order: relayOrder
-      }, {
-        fetchPolicy: 'store-or-network'
-      })
-      currentCursor.current = data.orders?.pageInfo?.startCursor
+      refetch(getRefetchParams())
     })
   };
 
   useEffect(() => {
+    currentCursor.current = undefined
     setTransition(() => {
-      refetch({
-        count: Number(takeNumber),
-        cursor: currentCursor.current,
-        order: relayOrder
-      }, {
-        fetchPolicy: 'store-or-network'
-      })
+      refetch(getRefetchParams())
     })
-  }, [takeNumber, relayOrder])
+  }, [takeNumber, sortOrder, ordersFilter])
 
   const hasNext = !!data.orders?.pageInfo.hasNextPage
   const hasPrevious = !!data.orders?.pageInfo.hasPreviousPage
@@ -179,6 +181,7 @@ export const OrdersTable = ({ orders }: OrdersTableProps) => {
       </TableHeader>
       <TableBody
         isLoading={isPending}
+        emptyContent={<TableEmptyContent text="No orders found" />}
         items={ordersList || []}
         loadingContent={<Spinner label="Loading..." />}
       >

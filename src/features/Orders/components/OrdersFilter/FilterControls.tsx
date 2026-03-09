@@ -1,15 +1,15 @@
 import { typedKeys } from "@/shared/types/utils";
 import { Button, DateRangePicker, Input } from "@heroui/react";
-import { useCallback, useMemo, type ChangeEvent } from "react";
+import { useEffect, useMemo, useState, type ChangeEvent } from "react";
 import { FILTER_CATEGORIES } from "../../constants";
 import { useOrdersStore } from "../../store";
 import type {
   DateFilterField,
   DatePickerValue,
-  FilterHanlderProvider,
   InputFilter,
   InputFilterField,
-  OrderFilterModelKey,
+  OrderFilterModel,
+  OrderFilterModelKey
 } from "../../types";
 
 interface FilterControlsProps {
@@ -21,55 +21,52 @@ export function FilterControls({ onApplyFilter }: FilterControlsProps) {
   const updateOrdersFilter = useOrdersStore(
     (state) => state.updateOrdersFilter,
   );
+  const resetOrdersFilter = useOrdersStore(
+    (state) => state.resetOrdersFilter,
+  );
+  const [localFilter, setLocalFilter] = useState<OrderFilterModel>(ordersFilter)
 
-  const provideFilterHandler = useCallback((orderKey: OrderFilterModelKey) => {
-    const callbacks: FilterHanlderProvider = {
-      // customerId: (event: ChangeEvent<HTMLInputElement>) => {
-      //   updateOrdersFilter({ customerId: event?.target.value });
-      // },
-      customerPhone: (event: ChangeEvent<HTMLInputElement>) => {
-        updateOrdersFilter({ customerPhone: event?.target.value });
-      },
-      orderDateRange: (value: DatePickerValue) => {
-        updateOrdersFilter({ orderDateRange: value });
-      },
-      shippedDateRange: (value: DatePickerValue) => {
-        updateOrdersFilter({ shippedDateRange: value });
-      },
-      // shipAddress: (event: ChangeEvent<HTMLInputElement>) => {
-      //   updateOrdersFilter({ shipAddress: event?.target.value });
-      // },
-    };
-    return callbacks[orderKey];
-  }, []);
+  const provideInputHandler = (key: keyof InputFilterField) => {
+    return (event: ChangeEvent<HTMLInputElement>) => {
+      setLocalFilter({ ...localFilter, [key]: event?.target.value });
+    }
+  }
+
+  const provideDateHandler = (key: keyof DateFilterField) => {
+    return (value: DatePickerValue | null) => {
+      setLocalFilter({ ...localFilter, [key]: value });
+    }
+  }
 
   const renderInputFilter = (orderFilterKey: keyof InputFilterField) => {
     const filterCategory = FILTER_CATEGORIES[orderFilterKey] as InputFilter;
-    const controlHandler = provideFilterHandler(orderFilterKey);
+    const controlHandler = provideInputHandler(orderFilterKey);
     return (
       <Input
         key={orderFilterKey}
         className="max-w-full md:max-w-md"
         labelPlacement="outside-top"
         label={filterCategory.label}
-        value={ordersFilter[orderFilterKey] ?? ""}
+        value={localFilter[orderFilterKey] ?? ''}
         onChange={controlHandler}
         placeholder={filterCategory.placeholder}
-        defaultValue={filterCategory.defaultValue}
       />
     );
   };
 
   const renderDateFilter = (orderFilterKey: keyof DateFilterField) => {
     const filterCategory = FILTER_CATEGORIES[orderFilterKey];
-    const controlHandler = provideFilterHandler(orderFilterKey);
+    const controlHandler = provideDateHandler(orderFilterKey);
+
     return (
       <DateRangePicker
         selectorButtonPlacement="start"
         key={orderFilterKey}
+        isRequired
+        isInvalid={!localFilter[orderFilterKey]}
+        errorMessage={!localFilter[orderFilterKey] ? "Please select a date range" : ""}
         onChange={controlHandler}
-        value={ordersFilter[orderFilterKey]}
-        defaultValue={null}
+        value={localFilter[orderFilterKey]}
         className="max-w-full md:max-w-md"
         labelPlacement="outside-top"
         label={filterCategory?.label}
@@ -80,14 +77,7 @@ export function FilterControls({ onApplyFilter }: FilterControlsProps) {
   const renderFilter = (filterKey: OrderFilterModelKey) => {
     if (!FILTER_CATEGORIES[filterKey]) return null;
     switch (filterKey) {
-      // case "id":
-      // case "customerId":
       case "customerPhone":
-        // case "customerContactName":
-        // case "employeeName":
-        // case "shipAddress":
-        // case "shipCountry":
-        // case "shipName":
         return renderInputFilter(filterKey);
       case "shippedDateRange":
       case "orderDateRange":
@@ -99,25 +89,47 @@ export function FilterControls({ onApplyFilter }: FilterControlsProps) {
 
   const filters = useMemo(() => {
     return typedKeys(FILTER_CATEGORIES).map(renderFilter);
-  }, [ordersFilter]);
+  }, [localFilter]);
+
+  useEffect(() => {
+    setLocalFilter(ordersFilter)
+  }, [ordersFilter])
 
   const applyFilter = async () => {
+    if (!localFilter.shippedDateRange || !localFilter.orderDateRange) {
+      return
+    }
+    updateOrdersFilter(localFilter)
     onApplyFilter()
   };
+
+  const resetFilter = () => {
+    resetOrdersFilter()
+    setLocalFilter(ordersFilter)
+  }
 
   return (
     <div className="bg-content1 rounded-large p-4">
       <div className="grid grid-cols-1 gap-4">
         {filters}
       </div>
-      <Button
-        onPress={applyFilter}
-        className="mt-4"
-        color="primary"
-        variant="flat"
-      >
-        Apply
-      </Button>
+      <div className="flex gap-x-2">
+        <Button
+          onPress={applyFilter}
+          className="mt-4"
+          color="primary"
+          variant="flat"
+        >
+          Apply
+        </Button>
+        <Button
+          onPress={resetFilter}
+          className="mt-4"
+          variant="flat"
+        >
+          Reset
+        </Button>
+      </div>
     </div>
   );
 }

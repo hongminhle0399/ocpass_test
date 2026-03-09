@@ -1,3 +1,4 @@
+import { parseDate } from "@internationalized/date";
 import type {
   OrderFilterModel,
   OrderFilterControl,
@@ -9,9 +10,15 @@ export const DEFAULT_TAKE_NUMBER = 10;
 export const SCROLL_TABLE_TO_VIEW_DELAY = 500;
 
 export const ORDERS_FILTER_DEFAULT_STATE: OrderFilterModel = {
-  orderDateRange: null,
+  orderDateRange: {
+    start: parseDate("1996-01-01"),
+    end: parseDate("1996-01-30"),
+  },
   customerPhone: null,
-  shippedDateRange: null,
+  shippedDateRange: {
+    start: parseDate("1996-01-01"),
+    end: parseDate("1996-01-30"),
+  },
 };
 
 export const FILTER_CATEGORIES: OrderFilterControl = {
