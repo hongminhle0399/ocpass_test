@@ -1,5 +1,5 @@
 import { typedKeys } from "@/shared/types/utils";
-import { Loading, TablePagination } from "@/shared/ui";
+import { Loading, TableEmptyContent, TablePagination } from "@/shared/ui";
 import { Avatar, Chip, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, type SortDescriptor, Button, Tooltip, type PressEvent } from "@heroui/react";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { graphql, useRefetchableFragment, useRelayEnvironment } from "react-relay";
@@ -195,11 +195,7 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
         })}
       </TableHeader>
       <TableBody
-        emptyContent={
-          <div className="flex flex-col items-center justify-center h-64 text-default-400">
-            No rows to display.
-          </div>
-        }
+        emptyContent={<TableEmptyContent text="No customers found" />}
         isLoading={isPending}
         items={customersList}
         loadingContent={<Loading label="Loading..." />}
