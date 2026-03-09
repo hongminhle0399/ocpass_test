@@ -97,24 +97,25 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
   }
 
   const toNextPage = () => {
+    currentCursor.current = data?.customers?.pageInfo?.endCursor;
     setTransition(() => {
       refetch(getRefetchParams())
     })
-    currentCursor.current = data?.customers?.pageInfo?.endCursor;
   };
 
   const toPreviousPage = () => {
+    currentCursor.current = data?.customers?.pageInfo?.startCursor;
     setTransition(() => {
       refetch(getRefetchParams());
     });
-    currentCursor.current = data?.customers?.pageInfo?.startCursor;
   };
 
   useEffect(() => {
+    currentCursor.current = undefined
     setTransition(() => {
       refetch(getRefetchParams())
     })
-  }, [takeNumber, refetch, sortOrder, customersFilter]);
+  }, [takeNumber, sortOrder, customersFilter]);
 
   const handleMouseEnter = (id: string) => () => {
     if (id !== activeHoverId) {
