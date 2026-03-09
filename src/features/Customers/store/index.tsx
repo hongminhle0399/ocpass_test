@@ -8,6 +8,7 @@ interface CustomersState {
   takeNumber: string;
   updateCustomersFilter: (order: Partial<CustomerFilterModel>) => void;
   setTakeNumber: (takeNumber: string) => void;
+  resetCustomersFilter: () => void;
 }
 
 export const useCustomersStore = create<CustomersState>()(
@@ -22,5 +23,6 @@ export const useCustomersStore = create<CustomersState>()(
       );
     },
     setTakeNumber: (take: string) => set((state) => { state.takeNumber = take }),
+    resetCustomersFilter: () => set((state) => { state.customersFilter = CUSTOMERS_FILTER_DEFAULT_STATE }),
   })),
 );

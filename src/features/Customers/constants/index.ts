@@ -32,8 +32,8 @@ export const FILTER_CATEGORIES: CustomerFilterControl = {
 
 export const ORDERS_COLUMNS: CustomerColumn = {
   id: "ID",
-  company: "Company",
   contactName: "Contact Name",
+  company: "Company",
   fax: "Fax",
   country: "Country",
   totalOrders: "Orders",

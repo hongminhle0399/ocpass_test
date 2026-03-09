@@ -1,6 +1,6 @@
 import { typedKeys } from "@/shared/types/utils";
 import { Loading, TablePagination } from "@/shared/ui";
-import { Avatar, Chip, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, type SortDescriptor } from "@heroui/react";
+import { Avatar, Chip, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, type SortDescriptor, Button, Tooltip, type PressEvent } from "@heroui/react";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { graphql, useRefetchableFragment, useRelayEnvironment } from "react-relay";
 import { ORDERS_COLUMNS } from "../../constants";
@@ -8,6 +8,7 @@ import { useCustomersStore } from "../../store";
 import type { CustomersTable_query$key } from "./__generated__/CustomersTable_query.graphql";
 import { useNavigate } from "react-router";
 import { customerPrefetchRegistry } from "@/features/CustomerDetails/components/CustomerDetailsFeature";
+import { ClipboardDocumentIcon } from "@heroicons/react/24/outline";
 
 const custmersTableFragment = graphql`
   fragment CustomersTable_query on Query
@@ -15,9 +16,20 @@ const custmersTableFragment = graphql`
     cursor: { type: "String" }
     count: { type: "Int", defaultValue: 10 }
     order: { type: "[CustomerSortInput!]" }
+    customerId: { type: "String" }
+    contactName: { type: "String" }
+    companyName: { type: "String" }
   )
   @refetchable(queryName: "CustomersFeatureRefetchQuery") {
-    customers(first: $count, after: $cursor, order: $order) {
+    customers(first: $count, after: $cursor, order: $order, 
+      where: { 
+        and: [
+          {customerId: { contains: $customerId }}, 
+          {contactName: { contains: $contactName }},
+          {companyName: { contains: $companyName }}
+        ]
+      }  
+    ) {
       edges {
         node {
           id
@@ -26,14 +38,6 @@ const custmersTableFragment = graphql`
           fax
           companyName
           country
-          orders {
-            id
-            orderDate
-            shipper {
-              companyName
-            }
-            freight
-          }
         }
       }
       pageInfo {
@@ -67,7 +71,7 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
     direction: "ascending",
   });
 
-  const relayOrder = useMemo(() => {
+  const sortOrder = useMemo(() => {
     if (!sortDescriptor.column || !sortDescriptor.direction) return null;
     const direction = sortDescriptor.direction === "ascending" ? "ASC" : "DESC";
 
@@ -81,39 +85,36 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
     }
   }, [sortDescriptor]);
 
+  const getRefetchParams = () => {
+    return {
+      cursor: currentCursor.current,
+      count: Number(takeNumber),
+      order: sortOrder,
+      customerId: customersFilter.id || '',
+      contactName: customersFilter.contactName || '',
+      companyName: customersFilter.company || ''
+    }
+  }
+
   const toNextPage = () => {
     setTransition(() => {
-      refetch({
-        cursor: data?.customers?.pageInfo?.endCursor,
-        count: Number(takeNumber),
-        order: relayOrder
-      });
-    });
+      refetch(getRefetchParams())
+    })
     currentCursor.current = data?.customers?.pageInfo?.endCursor;
   };
 
   const toPreviousPage = () => {
     setTransition(() => {
-      refetch({
-        cursor: data?.customers?.pageInfo?.startCursor,
-        count: Number(takeNumber),
-        order: relayOrder
-      });
+      refetch(getRefetchParams());
     });
     currentCursor.current = data?.customers?.pageInfo?.startCursor;
   };
 
   useEffect(() => {
     setTransition(() => {
-      refetch({
-        count: Number(takeNumber),
-        cursor: currentCursor.current,
-        order: relayOrder
-      }, {
-        fetchPolicy: 'store-or-network'
-      });
-    });
-  }, [takeNumber, refetch, customersFilter, relayOrder]);
+      refetch(getRefetchParams())
+    })
+  }, [takeNumber, refetch, sortOrder, customersFilter]);
 
   const handleMouseEnter = (id: string) => () => {
     if (id !== activeHoverId) {
@@ -129,9 +130,31 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
     navigate(`/customers/${id}`);
   };
 
+  const handleCopy = (text: string | undefined | null) => (e: PressEvent) => {
+    if (text) {
+      window.navigator.clipboard.writeText(text)
+    }
+  }
+
   const hasNext = !!data?.customers?.pageInfo?.hasNextPage;
   const hasPrevious = !!data?.customers?.pageInfo?.hasPreviousPage;
-  const customersList = useMemo(() => (isPending ? [] : data.customers?.edges || []), [data.customers?.edges, isPending]);
+
+  const customersList = useMemo(() => isPending ? [] : data.customers?.edges || [], [data.customers?.edges, isPending]);
+
+  const renderCopyButton = (text: string | null | undefined, label: string) => (
+    <Tooltip content={`Copy ${label}`} closeDelay={0}>
+      <Button
+        isIconOnly
+        size="sm"
+        variant="light"
+        radius="full"
+        onPress={handleCopy(text)}
+        className="text-default-400 hover:text-primary transition-colors h-7 w-7 min-w-7 opacity-0 group-hover:opacity-100"
+      >
+        <ClipboardDocumentIcon className="w-3.5 h-3.5" />
+      </Button>
+    </Tooltip>
+  );
 
   return (
     <Table
@@ -143,11 +166,11 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
       sortDescriptor={sortDescriptor}
       onSortChange={setSortDescriptor}
       classNames={{
-        base: "flex-1 overflow-scroll",
-        table: "h-full",
-        wrapper: "flex-1",
-        tr: "hover:bg-default-100 transition-colors",
-        td: "whitespace-nowrap overflow-hidden text-ellipsis max-w-60",
+        base: "flex-1 min-h-[400px] overflow-scroll",
+        table: "h-full min-w-full",
+        wrapper: "flex-1 h-full",
+        tr: "hover:bg-default-100 transition-colors group",
+        td: "whitespace-nowrap overflow-hidden text-ellipsis max-w-60 h-16 py-0",
       }}
       bottomContent={
         <TablePagination
@@ -171,6 +194,11 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
         })}
       </TableHeader>
       <TableBody
+        emptyContent={
+          <div className="flex flex-col items-center justify-center h-64 text-default-400">
+            No rows to display.
+          </div>
+        }
         isLoading={isPending}
         items={customersList}
         loadingContent={<Loading label="Loading..." />}
@@ -186,9 +214,12 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
               className="cursor-pointer"
             >
               <TableCell>
-                <Chip size="sm" variant="flat" color="default" className="font-mono">
-                  {node.id}
-                </Chip>
+                <div className="flex items-center gap-x-1">
+                  <Chip size="sm" variant="flat" color="default" className="font-mono">
+                    {node.id}
+                  </Chip>
+                  {renderCopyButton(node.id, "ID")}
+                </div>
               </TableCell>
               <TableCell>
                 <div className="flex gap-x-2 items-center">
@@ -202,12 +233,16 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
                   <span className="font-medium text-gray-700 dark:text-gray-200">
                     {node.contactName}
                   </span>
+                  {renderCopyButton(node.contactName, "Contact Name")}
                 </div>
               </TableCell>
               <TableCell>
-                <span className="font-bold text-blue-600 dark:text-blue-400">
-                  {node.companyName}
-                </span>
+                <div className="flex items-center gap-x-2">
+                  <span className="font-bold text-blue-600 dark:text-blue-400">
+                    {node.companyName}
+                  </span>
+                  {renderCopyButton(node.companyName, "Company")}
+                </div>
               </TableCell>
               <TableCell>
                 <span className="text-gray-500 text-sm italic">
@@ -220,8 +255,8 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
                 </Chip>
               </TableCell>
               <TableCell>
-                <Chip size="sm" variant="solid" color="secondary" className="font-bold">
-                  {node.orders?.length || 0}
+                <Chip size="sm" variant="flat" color="default">
+                  —
                 </Chip>
               </TableCell>
             </TableRow>
