@@ -1,6 +1,6 @@
 import { typedKeys } from "@/shared/types/utils";
 import { Loading, TablePagination } from "@/shared/ui";
-import { Avatar, Chip, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@heroui/react";
+import { Avatar, Chip, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, type SortDescriptor } from "@heroui/react";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { graphql, useRefetchableFragment, useRelayEnvironment } from "react-relay";
 import { ORDERS_COLUMNS } from "../../constants";
@@ -14,9 +14,10 @@ const custmersTableFragment = graphql`
   @argumentDefinitions(
     cursor: { type: "String" }
     count: { type: "Int", defaultValue: 10 }
+    order: { type: "[CustomerSortInput!]" }
   )
   @refetchable(queryName: "CustomersFeatureRefetchQuery") {
-    customers(first: $count, after: $cursor) {
+    customers(first: $count, after: $cursor, order: $order) {
       edges {
         node {
           id
@@ -56,31 +57,63 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
 
   const navigate = useNavigate();
   const takeNumber = useCustomersStore((state) => state.takeNumber);
+  const customersFilter = useCustomersStore(state => state.customersFilter)
   const environment = useRelayEnvironment();
   const [activeHoverId, setActiveHoverId] = useState<string | null>(null);
   const timeoutId = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
+  const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
+    column: "id",
+    direction: "ascending",
+  });
+
+  const relayOrder = useMemo(() => {
+    if (!sortDescriptor.column || !sortDescriptor.direction) return null;
+    const direction = sortDescriptor.direction === "ascending" ? "ASC" : "DESC";
+
+    switch (sortDescriptor.column) {
+      case "id": return [{ customerId: direction }];
+      case "company": return [{ companyName: direction }];
+      case "contactName": return [{ contactName: direction }];
+      case "fax": return [{ fax: direction }];
+      case "country": return [{ country: direction }];
+      default: return null;
+    }
+  }, [sortDescriptor]);
+
   const toNextPage = () => {
     setTransition(() => {
-      refetch({ cursor: data?.customers?.pageInfo?.endCursor, count: Number(takeNumber) });
+      refetch({
+        cursor: data?.customers?.pageInfo?.endCursor,
+        count: Number(takeNumber),
+        order: relayOrder
+      });
     });
     currentCursor.current = data?.customers?.pageInfo?.endCursor;
   };
 
   const toPreviousPage = () => {
     setTransition(() => {
-      refetch({ cursor: data?.customers?.pageInfo?.startCursor, count: Number(takeNumber) });
+      refetch({
+        cursor: data?.customers?.pageInfo?.startCursor,
+        count: Number(takeNumber),
+        order: relayOrder
+      });
     });
     currentCursor.current = data?.customers?.pageInfo?.startCursor;
   };
 
   useEffect(() => {
     setTransition(() => {
-      refetch({ count: Number(takeNumber), cursor: currentCursor.current }, {
+      refetch({
+        count: Number(takeNumber),
+        cursor: currentCursor.current,
+        order: relayOrder
+      }, {
         fetchPolicy: 'store-or-network'
       });
     });
-  }, [takeNumber, refetch]);
+  }, [takeNumber, refetch, customersFilter, relayOrder]);
 
   const handleMouseEnter = (id: string) => () => {
     if (id !== activeHoverId) {
@@ -107,6 +140,8 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
       fullWidth
       aria-label="Table with customers data"
       bottomContentPlacement="outside"
+      sortDescriptor={sortDescriptor}
+      onSortChange={setSortDescriptor}
       classNames={{
         base: "flex-1 overflow-scroll",
         table: "h-full",
@@ -126,7 +161,13 @@ export const CustomersTable = ({ customers }: CustomersTableProps) => {
     >
       <TableHeader>
         {typedKeys(ORDERS_COLUMNS).map((key) => {
-          return <TableColumn key={key}>{ORDERS_COLUMNS[key]}</TableColumn>;
+          // Disable sorting for "totalOrders" as it is a virtual field
+          const isSortable = key !== "totalOrders";
+          return (
+            <TableColumn key={key} allowsSorting={isSortable}>
+              {ORDERS_COLUMNS[key]}
+            </TableColumn>
+          );
         })}
       </TableHeader>
       <TableBody

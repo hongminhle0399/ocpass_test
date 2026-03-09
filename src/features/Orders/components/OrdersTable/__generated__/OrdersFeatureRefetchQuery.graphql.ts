@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<550f3abc1bd520a32bb2f1309f64bd35>>
+ * @generated SignedSource<<8af0777721e6a105a496386e6942148b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,9 +10,68 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
+export type SortEnumType = "ASC" | "DESC" | "%future added value";
+export type OrderSortInput = {
+  customer?: CustomerSortInput | null | undefined;
+  customerId?: SortEnumType | null | undefined;
+  employee?: EmployeeSortInput | null | undefined;
+  employeeId?: SortEnumType | null | undefined;
+  freight?: SortEnumType | null | undefined;
+  orderDate?: SortEnumType | null | undefined;
+  orderId?: SortEnumType | null | undefined;
+  requiredDate?: SortEnumType | null | undefined;
+  shipAddress?: SortEnumType | null | undefined;
+  shipCity?: SortEnumType | null | undefined;
+  shipCountry?: SortEnumType | null | undefined;
+  shipName?: SortEnumType | null | undefined;
+  shipPostalCode?: SortEnumType | null | undefined;
+  shipRegion?: SortEnumType | null | undefined;
+  shipVia?: SortEnumType | null | undefined;
+  shippedDate?: SortEnumType | null | undefined;
+  shipper?: ShipperSortInput | null | undefined;
+};
+export type CustomerSortInput = {
+  address?: SortEnumType | null | undefined;
+  city?: SortEnumType | null | undefined;
+  companyName?: SortEnumType | null | undefined;
+  contactName?: SortEnumType | null | undefined;
+  contactTitle?: SortEnumType | null | undefined;
+  country?: SortEnumType | null | undefined;
+  customerId?: SortEnumType | null | undefined;
+  fax?: SortEnumType | null | undefined;
+  phone?: SortEnumType | null | undefined;
+  postalCode?: SortEnumType | null | undefined;
+  region?: SortEnumType | null | undefined;
+};
+export type EmployeeSortInput = {
+  address?: SortEnumType | null | undefined;
+  birthDate?: SortEnumType | null | undefined;
+  city?: SortEnumType | null | undefined;
+  country?: SortEnumType | null | undefined;
+  employeeId?: SortEnumType | null | undefined;
+  extension?: SortEnumType | null | undefined;
+  firstName?: SortEnumType | null | undefined;
+  hireDate?: SortEnumType | null | undefined;
+  homePhone?: SortEnumType | null | undefined;
+  lastName?: SortEnumType | null | undefined;
+  manager?: EmployeeSortInput | null | undefined;
+  notes?: SortEnumType | null | undefined;
+  photoPath?: SortEnumType | null | undefined;
+  postalCode?: SortEnumType | null | undefined;
+  region?: SortEnumType | null | undefined;
+  reportsTo?: SortEnumType | null | undefined;
+  title?: SortEnumType | null | undefined;
+  titleOfCourtesy?: SortEnumType | null | undefined;
+};
+export type ShipperSortInput = {
+  companyName?: SortEnumType | null | undefined;
+  phone?: SortEnumType | null | undefined;
+  shipperId?: SortEnumType | null | undefined;
+};
 export type OrdersFeatureRefetchQuery$variables = {
   count?: number | null | undefined;
   cursor?: string | null | undefined;
+  order?: ReadonlyArray<OrderSortInput> | null | undefined;
 };
 export type OrdersFeatureRefetchQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"OrdersTable_query">;
@@ -33,9 +92,19 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "cursor"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "order"
   }
 ],
 v1 = {
+  "kind": "Variable",
+  "name": "order",
+  "variableName": "order"
+},
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -60,7 +129,8 @@ return {
             "kind": "Variable",
             "name": "cursor",
             "variableName": "cursor"
-          }
+          },
+          (v1/*: any*/)
         ],
         "kind": "FragmentSpread",
         "name": "OrdersTable_query"
@@ -87,7 +157,8 @@ return {
             "kind": "Variable",
             "name": "first",
             "variableName": "count"
-          }
+          },
+          (v1/*: any*/)
         ],
         "concreteType": "OrdersConnection",
         "kind": "LinkedField",
@@ -110,7 +181,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v1/*: any*/),
+                  (v2/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -147,7 +218,7 @@ return {
                         "name": "phone",
                         "storageKey": null
                       },
-                      (v1/*: any*/)
+                      (v2/*: any*/)
                     ],
                     "storageKey": null
                   },
@@ -237,16 +308,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "40e2d3a08ec58f99a39efcf76b5432d6",
+    "cacheID": "02334aa15dc473df33ff255afb29aada",
     "id": null,
     "metadata": {},
     "name": "OrdersFeatureRefetchQuery",
     "operationKind": "query",
-    "text": "query OrdersFeatureRefetchQuery(\n  $count: Int = 10\n  $cursor: String\n) {\n  ...OrdersTable_query_1G22uz\n}\n\nfragment OrdersTable_query_1G22uz on Query {\n  orders(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        shipName\n        shipAddress\n        customer {\n          contactName\n          phone\n          id\n        }\n        shippedDate\n        orderDate\n        shipVia\n        shipRegion\n        shipCountry\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      endCursor\n      startCursor\n    }\n  }\n}\n"
+    "text": "query OrdersFeatureRefetchQuery(\n  $count: Int = 10\n  $cursor: String\n  $order: [OrderSortInput!]\n) {\n  ...OrdersTable_query_2kH0K8\n}\n\nfragment OrdersTable_query_2kH0K8 on Query {\n  orders(first: $count, after: $cursor, order: $order) {\n    edges {\n      node {\n        id\n        shipName\n        shipAddress\n        customer {\n          contactName\n          phone\n          id\n        }\n        shippedDate\n        orderDate\n        shipVia\n        shipRegion\n        shipCountry\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      endCursor\n      startCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "14604f5e863dd872e1031bbdf30b4f77";
+(node as any).hash = "cbaac6e36ae488bb005369878f3b27d4";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dcfe899e5945478ff8a659ca410b4e72>>
+ * @generated SignedSource<<88a7683b1bb9d924c05980385992a4fa>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,9 +10,24 @@
 
 import { ConcreteRequest } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
+export type SortEnumType = "ASC" | "DESC" | "%future added value";
+export type CustomerSortInput = {
+  address?: SortEnumType | null | undefined;
+  city?: SortEnumType | null | undefined;
+  companyName?: SortEnumType | null | undefined;
+  contactName?: SortEnumType | null | undefined;
+  contactTitle?: SortEnumType | null | undefined;
+  country?: SortEnumType | null | undefined;
+  customerId?: SortEnumType | null | undefined;
+  fax?: SortEnumType | null | undefined;
+  phone?: SortEnumType | null | undefined;
+  postalCode?: SortEnumType | null | undefined;
+  region?: SortEnumType | null | undefined;
+};
 export type CustomersFeatureRefetchQuery$variables = {
   count?: number | null | undefined;
   cursor?: string | null | undefined;
+  order?: ReadonlyArray<CustomerSortInput> | null | undefined;
 };
 export type CustomersFeatureRefetchQuery$data = {
   readonly " $fragmentSpreads": FragmentRefs<"CustomersTable_query">;
@@ -33,16 +48,26 @@ var v0 = [
     "defaultValue": null,
     "kind": "LocalArgument",
     "name": "cursor"
+  },
+  {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "order"
   }
 ],
 v1 = {
+  "kind": "Variable",
+  "name": "order",
+  "variableName": "order"
+},
+v2 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v2 = {
+v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
@@ -67,7 +92,8 @@ return {
             "kind": "Variable",
             "name": "cursor",
             "variableName": "cursor"
-          }
+          },
+          (v1/*: any*/)
         ],
         "kind": "FragmentSpread",
         "name": "CustomersTable_query"
@@ -94,7 +120,8 @@ return {
             "kind": "Variable",
             "name": "first",
             "variableName": "count"
-          }
+          },
+          (v1/*: any*/)
         ],
         "concreteType": "CustomersConnection",
         "kind": "LinkedField",
@@ -117,7 +144,7 @@ return {
                 "name": "node",
                 "plural": false,
                 "selections": [
-                  (v1/*: any*/),
+                  (v2/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -139,7 +166,7 @@ return {
                     "name": "fax",
                     "storageKey": null
                   },
-                  (v2/*: any*/),
+                  (v3/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -155,7 +182,7 @@ return {
                     "name": "orders",
                     "plural": true,
                     "selections": [
-                      (v1/*: any*/),
+                      (v2/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -171,8 +198,8 @@ return {
                         "name": "shipper",
                         "plural": false,
                         "selections": [
-                          (v2/*: any*/),
-                          (v1/*: any*/)
+                          (v3/*: any*/),
+                          (v2/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -237,16 +264,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "64783e91020ac14151ff9f69bcfe38c3",
+    "cacheID": "40d3d47be96843988bca9dd4a41e84da",
     "id": null,
     "metadata": {},
     "name": "CustomersFeatureRefetchQuery",
     "operationKind": "query",
-    "text": "query CustomersFeatureRefetchQuery(\n  $count: Int = 10\n  $cursor: String\n) {\n  ...CustomersTable_query_1G22uz\n}\n\nfragment CustomersTable_query_1G22uz on Query {\n  customers(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        contactName\n        city\n        fax\n        companyName\n        country\n        orders {\n          id\n          orderDate\n          shipper {\n            companyName\n            id\n          }\n          freight\n        }\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      endCursor\n      startCursor\n    }\n  }\n}\n"
+    "text": "query CustomersFeatureRefetchQuery(\n  $count: Int = 10\n  $cursor: String\n  $order: [CustomerSortInput!]\n) {\n  ...CustomersTable_query_2kH0K8\n}\n\nfragment CustomersTable_query_2kH0K8 on Query {\n  customers(first: $count, after: $cursor, order: $order) {\n    edges {\n      node {\n        id\n        contactName\n        city\n        fax\n        companyName\n        country\n        orders {\n          id\n          orderDate\n          shipper {\n            companyName\n            id\n          }\n          freight\n        }\n      }\n    }\n    pageInfo {\n      hasNextPage\n      hasPreviousPage\n      endCursor\n      startCursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "af867dcfd51c95cc53cdda1978d620e9";
+(node as any).hash = "40614893e1dddeb0f3e9a12e49bddf44";
 
 export default node;

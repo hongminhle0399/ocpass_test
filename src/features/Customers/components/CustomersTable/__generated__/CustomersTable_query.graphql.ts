@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<311bae2584545af777209414435a3f56>>
+ * @generated SignedSource<<c168593ee077bcd6db6bff94a4fb2a72>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -72,6 +72,11 @@ return {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "cursor"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "order"
     }
   ],
   "kind": "Fragment",
@@ -96,6 +101,11 @@ return {
           "kind": "Variable",
           "name": "first",
           "variableName": "count"
+        },
+        {
+          "kind": "Variable",
+          "name": "order",
+          "variableName": "order"
         }
       ],
       "concreteType": "CustomersConnection",
@@ -241,6 +251,6 @@ return {
 };
 })();
 
-(node as any).hash = "af867dcfd51c95cc53cdda1978d620e9";
+(node as any).hash = "40614893e1dddeb0f3e9a12e49bddf44";
 
 export default node;
